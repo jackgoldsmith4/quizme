@@ -15,23 +15,21 @@ class App extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <CssBaseline />
-                <Container maxWidth='md'>
-                    <Grid item xs={12} /><Grid item xs={12} />
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                        <Typography variant="h2"> Welcome to QuizMe! </Typography>
-                    </Grid>
-                    <Grid item xs={12} /><Grid item xs={12} />
-                    <Button
-                        component={Link}
-                        to='/create-quiz'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                    >
-                        Create a Quiz
-                    </Button>
-                </Container>
+                <Grid item xs={12} /><Grid item xs={12} />
+                <Grid container direction='row' justify='center' alignItems='center'>
+                    <Typography variant="h2"> Welcome to QuizMe! </Typography>
+                </Grid>
+                <Grid item xs={12} /><Grid item xs={12} />
+                <Button
+                    component={Link}
+                    to='/create-quiz'
+                    fullWidth
+                    variant='contained'
+                    color='primary'
+                    size='large'
+                >
+                    Create a Quiz
+                </Button>
             </React.Fragment>
         );
     }

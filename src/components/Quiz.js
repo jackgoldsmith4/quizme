@@ -1,7 +1,7 @@
 import React from 'react';
 import Question from './Question.js';
 import { Link } from 'react-router-dom';
-import { Container, Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid, Typography, TextField, Button } from '@material-ui/core';
 
 class Quiz extends React.Component {
     constructor(props) {
@@ -35,46 +35,48 @@ class Quiz extends React.Component {
 
     render() {
         return (
-            <Container maxwidth='md'>
-                <Grid container spacing={3} alignItems='center'>
-                    <Grid item xs={12} /><Grid item xs={12} />
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                        <Typography variant="h2"> {this.state.name} </Typography>
-                    </Grid>
-
-                     <Grid item xs={10}>
-                        <TextField
-                            label='Quiz Name'
-                            fullWidth
-                            required={true}
-                            variant='outlined'
-                            onChange={e => this.handleNameChange(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <TextField
-                            id='number-of-questions'
-                            label='# of Questions'
-                            variant='outlined'
-                            required={true}
-                            disabled={false}
-                            onChange={e => this.handleNumQuestionsChange(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={12} /><Grid item xs={12} />
-
-                    {this.state.questions}
-                    <Button
-                        component={Link}
-                        to='/'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                    >
-                        Submit
-                    </Button>
+            <React.Fragment>
+                <Grid item xs={12} /><Grid item xs={12} />
+                <Grid container direction='row' justify='center' alignItems='center'>
+                    <Typography variant="h2"> {this.state.name} </Typography>
                 </Grid>
-            </Container>
+
+                 <Grid item xs={10}>
+                    <TextField
+                        label='Quiz Name'
+                        fullWidth
+                        required={true}
+                        variant='outlined'
+                        onChange={e => this.handleNameChange(e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={2}>
+                    <TextField
+                        id='number-of-questions'
+                        label='# of Questions'
+                        variant='outlined'
+                        required={true}
+                        disabled={false}
+                        onChange={e => this.handleNumQuestionsChange(e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12} /><Grid item xs={12} />
+
+                {this.state.questions}
+                <Button
+                    component={Link}
+                    to='/'
+                    fullWidth
+                    variant='contained'
+                    color='primary'
+                    //disabled={true}
+                    type='submit'
+                    size='large'
+                >
+                    Submit
+                </Button>
+                <Grid item xs={12} /><Grid item xs={12} />
+            </React.Fragment>
         );
     }
 }
