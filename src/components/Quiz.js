@@ -1,8 +1,7 @@
 import React from 'react';
-import Namespace from './Namespace.js';
 import Question from './Question.js';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, TextField } from '@material-ui/core';
 
 const classes = makeStyles(theme => ({
   root: {
@@ -17,17 +16,28 @@ class Quiz extends React.Component {
         this.state = {
             name: 'Create Your Quiz',
             numQuestions: 0,
+            questions: [],
         }
     }
 
+    changeQuestionsList(newNum) {
+        let arr = [];
+        for (var i = 0; i < newNum; i++) {
+            arr.push(<Question key={i} />);
+        }
+
+        return arr;
+    }
+
     handleNameChange(newName) {
-        this.state.name = newName;
-        this.render();
+        this.setState({ name: newName });
     }
 
     handleNumQuestionsChange(i) {
-        this.state.numQuestions = i;
-        render();
+        this.setState({ questions: this.changeQuestionsList(i)});
+        this.setState({ numQuestions: i });
+        document.getElementById('number-of-questions').disabled = true;
+        this.render();
     }
 
     render() {
@@ -36,13 +46,29 @@ class Quiz extends React.Component {
                 <Grid container spacing={3} alignItems='center'>
                     <Grid item xs={12} /><Grid item xs={12} />
                     <Grid container direction='row' justify='center' alignItems='center'>
-                        <Typography variant="h1"> {this.state.name} </Typography>
+                        <Typography variant="h2"> {this.state.name} </Typography>
                     </Grid>
-                    <Namespace
-                        name={this.state.name}
-                        onChange={(newName) => this.handleNameChange(newName)}
-                    />
-                    <Question />
+
+                     <Grid item xs={10}>
+                        <TextField
+                            label='Quiz Name'
+                            fullWidth
+                            variant='outlined'
+                            onChange={e => this.handleNameChange(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <TextField
+                            id='number-of-questions'
+                            label='# of Questions'
+                            variant='outlined'
+                            disabled={false}
+                            onChange={e => this.handleNumQuestionsChange(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} /><Grid item xs={12} />
+
+                    {this.state.questions}
                 </Grid>
             </div>
         );
