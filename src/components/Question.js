@@ -1,8 +1,6 @@
 import React from 'react';
-import { Grid, Paper, Divider, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Paper, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel } from '@material-ui/core';
 
-//TODO make question and answers and radio button REQUIRED FIELDS
 class Question extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +33,7 @@ class Question extends React.Component {
                 this.setState({answer4: e.target.value});
                 break;
             default:
-                throw new Error(); //TODO document
+                throw new Error("Invalid correct answer choice");
         }
     }
 
@@ -47,6 +45,11 @@ class Question extends React.Component {
         //console.log(this.state.correctAnswer);
     }
 
+    genQuestionLabel(number) {
+        var q = 'Question ';
+        return q.concat(number);
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -54,7 +57,7 @@ class Question extends React.Component {
                      <Grid item xs={12}>
                         <Paper>
                             <TextField
-                                label='Question:'
+                                label={this.genQuestionLabel(this.props.number)}
                                 fullWidth
                                 variant='outlined'
                                 required={true}
@@ -65,7 +68,7 @@ class Question extends React.Component {
                      <Grid item xs={6} sm={6}>
                          <Paper>
                             <TextField
-                                label='Answer Choice 1:'
+                                label='Answer Choice 1'
                                 fullWidth
                                 variant='outlined'
                                 required={true}
@@ -76,7 +79,7 @@ class Question extends React.Component {
                      <Grid item xs={6} sm={6}>
                          <Paper>
                             <TextField
-                                label='Answer Choice 2:'
+                                label='Answer Choice 2'
                                 fullWidth
                                 variant='outlined'
                                 required={true}
@@ -87,7 +90,7 @@ class Question extends React.Component {
                      <Grid item xs={6} sm={6}>
                          <Paper>
                             <TextField
-                                label='Answer Choice 3:'
+                                label='Answer Choice 3'
                                 fullWidth
                                 variant='outlined'
                                 required={true}
@@ -98,7 +101,7 @@ class Question extends React.Component {
                      <Grid item xs={6} sm={6}>
                          <Paper>
                             <TextField
-                                label='Answer Choice 4:'
+                                label='Answer Choice 4'
                                 fullWidth
                                 variant='outlined'
                                 required={true}

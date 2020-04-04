@@ -1,14 +1,7 @@
 import React from 'react';
 import Question from './Question.js';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography, TextField } from '@material-ui/core';
-
-const classes = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    alignItems: 'center',
-  },
-}));
+import { Link } from 'react-router-dom';
+import { Container, Grid, Typography, TextField, Button } from '@material-ui/core';
 
 class Quiz extends React.Component {
     constructor(props) {
@@ -23,7 +16,7 @@ class Quiz extends React.Component {
     changeQuestionsList(newNum) {
         let arr = [];
         for (var i = 0; i < newNum; i++) {
-            arr.push(<Question key={i} />);
+            arr.push(<Question key={i} number={i + 1} />);
         }
 
         return arr;
@@ -42,7 +35,7 @@ class Quiz extends React.Component {
 
     render() {
         return (
-            <div className={classes.root}>
+            <Container maxwidth='md'>
                 <Grid container spacing={3} alignItems='center'>
                     <Grid item xs={12} /><Grid item xs={12} />
                     <Grid container direction='row' justify='center' alignItems='center'>
@@ -53,6 +46,7 @@ class Quiz extends React.Component {
                         <TextField
                             label='Quiz Name'
                             fullWidth
+                            required={true}
                             variant='outlined'
                             onChange={e => this.handleNameChange(e.target.value)}
                         />
@@ -62,6 +56,7 @@ class Quiz extends React.Component {
                             id='number-of-questions'
                             label='# of Questions'
                             variant='outlined'
+                            required={true}
                             disabled={false}
                             onChange={e => this.handleNumQuestionsChange(e.target.value)}
                         />
@@ -69,8 +64,17 @@ class Quiz extends React.Component {
                     <Grid item xs={12} /><Grid item xs={12} />
 
                     {this.state.questions}
+                    <Button
+                        component={Link}
+                        to='/'
+                        fullWidth
+                        variant='contained'
+                        color='primary'
+                    >
+                        Submit
+                    </Button>
                 </Grid>
-            </div>
+            </Container>
         );
     }
 }
