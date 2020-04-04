@@ -1,20 +1,13 @@
 import React from 'react';
-import { Grid, Paper, Divider, TextField, Radio, RadioGroup } from '@material-ui/core';
+import { Grid, Paper, Divider, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const styles = makeStyles(theme => ({
   paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
   },
-  radioGroup: {
-      width: 'auto',
-      height: 'auto',
-      display: 'flex',
-      flexWrap: 'nowrap',
-      flexDirection: 'row',
-  }
 }));
 
 //TODO make question and answers and radio button REQUIRED FIELDS
@@ -56,10 +49,10 @@ class Question extends React.Component {
 
     handleRadioChange(correctAnswerNum) {
         //TODO what is the difference between these lines?
-        //first one logs correct answer, second one keeps the button checked
-        this.state.correctAnswer = correctAnswerNum;
+        //first one logs correct answer below, second one keeps the button checked correctly
+        //this.state.correctAnswer = correctAnswerNum;
         this.setState({correctAnswer: correctAnswerNum});
-        console.log(this.state.correctAnswer);
+        //console.log(this.state.correctAnswer);
     }
 
     render() {
@@ -72,6 +65,7 @@ class Question extends React.Component {
                                 label='Question:'
                                 fullWidth
                                 variant='outlined'
+                                required={true}
                                 onChange={e => this.handleQuestionChange(e.target.value)}
                             />
                         </Paper>
@@ -82,6 +76,7 @@ class Question extends React.Component {
                                 label='Answer Choice 1:'
                                 fullWidth
                                 variant='outlined'
+                                required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 1)}
                             />
                          </Paper>
@@ -92,6 +87,7 @@ class Question extends React.Component {
                                 label='Answer Choice 2:'
                                 fullWidth
                                 variant='outlined'
+                                required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 2)}
                             />
                          </Paper>
@@ -102,6 +98,7 @@ class Question extends React.Component {
                                 label='Answer Choice 3:'
                                 fullWidth
                                 variant='outlined'
+                                required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 3)}
                             />
                          </Paper>
@@ -112,34 +109,48 @@ class Question extends React.Component {
                                 label='Answer Choice 4:'
                                 fullWidth
                                 variant='outlined'
+                                required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 4)}
                             />
                          </Paper>
                      </Grid>
                      <Grid item xs={12}>
-                         <Paper>
-                            <RadioGroup className={styles.radioGroup}>
-                                 <Radio
-                                    checked={this.state.correctAnswer === 1}
-                                    onChange={() => this.handleRadioChange(1)}
-                                    value='1'
-                                 />
-                                 <Radio
-                                     checked={this.state.correctAnswer === 2}
-                                     onChange={() => this.handleRadioChange(2)}
-                                     value='2'
-                                 />
-                                 <Radio
-                                    checked={this.state.correctAnswer === 3}
-                                    onChange={() => this.handleRadioChange(3)}
-                                    value='3'
-                                 />
-                                 <Radio
-                                    checked={this.state.correctAnswer === 4}
-                                    onChange={() => this.handleRadioChange(4)}
-                                    value='4'
-                                 />
-                            </RadioGroup>
+                         <Paper className={styles.paper}>
+                             <FormControl variant='outlined' fullWidth required={true}>
+                                <RadioGroup
+                                    row
+                                    value={this.state.correctAnswer}
+                                >
+                                    <FormControlLabel
+                                        value={1}
+                                        control={<Radio color='primary' />}
+                                        label='1'
+                                        labelPlacement="start"
+                                        onChange={() => this.handleRadioChange(1)}
+                                    />
+                                    <FormControlLabel
+                                         value={2}
+                                         control={<Radio color='primary' />}
+                                         label='2'
+                                         labelPlacement="start"
+                                         onChange={() => this.handleRadioChange(2)}
+                                    />
+                                    <FormControlLabel
+                                         value={3}
+                                         control={<Radio color='primary' />}
+                                         label='3'
+                                         labelPlacement="start"
+                                         onChange={() => this.handleRadioChange(3)}
+                                    />
+                                    <FormControlLabel
+                                         value={4}
+                                         control={<Radio color='primary' />}
+                                         label='4'
+                                         labelPlacement="start"
+                                         onChange={() => this.handleRadioChange(4)}
+                                    />
+                                </RadioGroup>
+                             </FormControl>
                          </Paper>
                       </Grid>
                  </Grid>
