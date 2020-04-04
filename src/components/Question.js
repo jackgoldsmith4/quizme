@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper, Divider } from '@material-ui/core';
+import { Grid, Paper, Divider, TextField, Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -16,19 +16,33 @@ export default function Question() {
         <React.Fragment>
              <Grid container>
                  <Grid item xs={12}>
-                     <Paper className={classes.paper}>Question</Paper>
+                    <Paper className={classes.paper}>
+                        <TextField label='Question:' fullWidth variant='outlined' />
+                    </Paper>
                  </Grid>
                  <Grid item xs={6} sm={6}>
-                     <Paper className={classes.paper}>Answer1</Paper>
+                     <Paper className={classes.paper}>
+                        <TextField label='Answer Choice 1:' fullWidth variant='outlined' />
+                        <Checkbox />
+                     </Paper>
                  </Grid>
                  <Grid item xs={6} sm={6}>
-                     <Paper className={classes.paper}>Answer2</Paper>
+                     <Paper className={classes.paper}>
+                        <TextField label='Answer Choice 2:' fullWidth variant='outlined' />
+                        <Checkbox />
+                     </Paper>
                  </Grid>
                  <Grid item xs={6} sm={6}>
-                     <Paper className={classes.paper}>Answer3</Paper>
+                     <Paper className={classes.paper}>
+                        <TextField label='Answer Choice 3:' fullWidth variant='outlined' />
+                        <Checkbox />
+                     </Paper>
                  </Grid>
                  <Grid item xs={6} sm={6}>
-                     <Paper className={classes.paper}>Answer4</Paper>
+                     <Paper className={classes.paper}>
+                        <TextField label='Answer Choice 4:' fullWidth variant='outlined' />
+                        <Checkbox />
+                     </Paper>
                  </Grid>
              </Grid>
 

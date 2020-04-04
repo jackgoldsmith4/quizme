@@ -1,34 +1,52 @@
 import React from 'react';
-import Title from './Title.js';
 import Namespace from './Namespace.js';
 import Question from './Question.js';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Grid, Paper } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
+const classes = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     alignItems: 'center',
   },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
 }));
 
-export default function Quiz() {
-    const classes = useStyles();
-    return(
-        <div className={classes.root}>
-            <Grid container spacing={3} alignItems='center'>
-                <Title />
-                <Namespace />
-                <Question />
-                <Question />
-                <Question />
-                <Question />
-            </Grid>
-        </div>
-    );
+class Quiz extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: 'Create Your Quiz',
+            numQuestions: 0,
+        }
+    }
+
+    handleNameChange(newName) {
+        this.state.name = newName;
+        this.render();
+    }
+
+    handleNumQuestionsChange(i) {
+        this.state.numQuestions = i;
+        render();
+    }
+
+    render() {
+        return (
+            <div className={classes.root}>
+                <Grid container spacing={3} alignItems='center'>
+                    <Grid item xs={12} /><Grid item xs={12} />
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                        <Typography variant="h1"> {this.state.name} </Typography>
+                    </Grid>
+                    <Namespace
+                        name={this.state.name}
+                        onChange={(newName) => this.handleNameChange(newName)}
+                    />
+                    <Question />
+                </Grid>
+            </div>
+        );
+    }
 }
+
+export default Quiz;
