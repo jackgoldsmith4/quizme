@@ -1,53 +1,69 @@
 import React from 'react';
-import { Grid, Paper, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel } from '@material-ui/core';
+import { Grid, Paper, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Button } from '@material-ui/core';
 
 class Question extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            question: '',
+            questionName: '',
             answer1: '',
             answer2: '',
             answer3: '',
             answer4: '',
             correctAnswer: 0,
+            number: this.props.number,
         }
+        this.handleQuestionSubmit=this.handleQuestionSubmit.bind(this);
     }
 
-    handleQuestionChange(newQuestion) {
-        this.setState({question: newQuestion})
+    handleQuestionNameChange(newQuestion) {
+        this.setState({questionName: newQuestion})
     }
 
     handleAnswerChange(newAnswer, answerNumber) {
         switch (answerNumber) {
             case 1:
-                this.setState({answer1: e.target.value});
+                this.setState({answer1: newAnswer});
                 break;
             case 2:
-                this.setState({answer2: e.target.value});
+                this.setState({answer2: newAnswer});
                 break;
             case 3:
-                this.setState({answer3: e.target.value});
+                this.setState({answer3: newAnswer});
                 break;
             case 4:
-                this.setState({answer4: e.target.value});
+                this.setState({answer4: newAnswer});
                 break;
             default:
                 throw new Error("Invalid correct answer choice");
         }
     }
 
-    handleRadioChange(correctAnswerNum) {
+    handleRadioChange(correctAnswerNum, next) {
         //TODO what is the difference between these lines?
         //first one logs correct answer below, second one keeps the button checked correctly
-        //this.state.correctAnswer = correctAnswerNum;
+        this.state.correctAnswer = correctAnswerNum;
         this.setState({correctAnswer: correctAnswerNum});
         //console.log(this.state.correctAnswer);
+        next();
     }
 
+    // add the number of the question to the question's label
     genQuestionLabel(number) {
         var q = 'Question ';
         return q.concat(number);
+    }
+
+    // update the parent component with information about this question
+    handleQuestionSubmit() {
+        this.props.handleQuestionChange(this.state.questionName,
+                                        this.state.answer1,
+                                        this.state.answer2,
+                                        this.state.answer3,
+                                        this.state.answer4,
+                                        this.state.correctAnswer,
+                                        this.props.number
+        );
     }
 
     render() {
@@ -57,11 +73,11 @@ class Question extends React.Component {
                      <Grid item xs={12}>
                         <Paper>
                             <TextField
-                                label={this.genQuestionLabel(this.props.number)}
+                                label={this.genQuestionLabel(this.state.number)}
                                 fullWidth
                                 variant='outlined'
-                                required={true}
-                                onChange={e => this.handleQuestionChange(e.target.value)}
+                                //required={true}
+                                onChange={e => this.handleQuestionNameChange(e.target.value)}
                             />
                         </Paper>
                      </Grid>
@@ -71,7 +87,7 @@ class Question extends React.Component {
                                 label='Answer Choice 1'
                                 fullWidth
                                 variant='outlined'
-                                required={true}
+                                //required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 1)}
                             />
                          </Paper>
@@ -82,7 +98,7 @@ class Question extends React.Component {
                                 label='Answer Choice 2'
                                 fullWidth
                                 variant='outlined'
-                                required={true}
+                                //required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 2)}
                             />
                          </Paper>
@@ -93,7 +109,7 @@ class Question extends React.Component {
                                 label='Answer Choice 3'
                                 fullWidth
                                 variant='outlined'
-                                required={true}
+                                //required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 3)}
                             />
                          </Paper>
@@ -104,14 +120,14 @@ class Question extends React.Component {
                                 label='Answer Choice 4'
                                 fullWidth
                                 variant='outlined'
-                                required={true}
+                                //required={true}
                                 onChange={(e) => this.handleAnswerChange(e.target.value, 4)}
                             />
                          </Paper>
                      </Grid>
                      <Grid item xs={12}>
                          <Paper>
-                             <FormControl variant='outlined' fullWidth required={true}>
+                             <FormControl variant='outlined' fullWidth /*required={true}*/>
                                 <RadioGroup
                                     row
                                     value={this.state.correctAnswer}
@@ -121,28 +137,28 @@ class Question extends React.Component {
                                         control={<Radio color='primary' />}
                                         label='1'
                                         labelPlacement="start"
-                                        onChange={() => this.handleRadioChange(1)}
+                                        onChange={() => this.handleRadioChange(1, this.handleQuestionSubmit)}
                                     />
                                     <FormControlLabel
                                          value={2}
                                          control={<Radio color='primary' />}
                                          label='2'
                                          labelPlacement="start"
-                                         onChange={() => this.handleRadioChange(2)}
+                                         onChange={() => this.handleRadioChange(2, this.handleQuestionSubmit)}
                                     />
                                     <FormControlLabel
                                          value={3}
                                          control={<Radio color='primary' />}
                                          label='3'
                                          labelPlacement="start"
-                                         onChange={() => this.handleRadioChange(3)}
+                                         onChange={() => this.handleRadioChange(3, this.handleQuestionSubmit)}
                                     />
                                     <FormControlLabel
                                          value={4}
                                          control={<Radio color='primary' />}
                                          label='4'
                                          labelPlacement="start"
-                                         onChange={() => this.handleRadioChange(4)}
+                                         onChange={() => this.handleRadioChange(4, this.handleQuestionSubmit)}
                                     />
                                 </RadioGroup>
                              </FormControl>

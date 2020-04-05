@@ -2,7 +2,7 @@ import React from 'react';
 import Question from './Question.js';
 import { Link } from 'react-router-dom';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
-import base from '../base.js';
+import db from '../base.js';
 
 class Quiz extends React.Component {
     constructor(props) {
@@ -12,34 +12,45 @@ class Quiz extends React.Component {
             numQuestions: 0,
             questions: [],
         }
+        this.handleQuestionChange = this.handleQuestionChange.bind(this);
     }
 
-    changeQuestionsList(newNum) {
-        let arr = [];
-        for (var i = 0; i < newNum; i++) {
-            arr.push(<Question key={i} number={i + 1} />);
-        }
-
-        return arr;
+    // retrieves data about each Question component and adds to firebase
+    handleQuestionChange(q, a1, a2, a3, a4, c, num) {
+        db.ref('quizzes/' + this.state.name + '/questions/' + num).set({
+            questionName: q,
+            answer1: a1,
+            answer2: a2,
+            answer3: a3,
+            answer4: a4,
+            correctAnswer: c,
+        })
     }
 
     handleNameChange(newName) {
         this.setState({ name: newName });
     }
 
-    handleNumQuestionsChange(i) {
-        this.setState({ questions: this.changeQuestionsList(i)});
-        this.setState({ numQuestions: i });
+    // TODO add validation to only take positive numbers as input
+    handleNumQuestionsChange(newNum) {
+        let arr = [];
+        for (var i = 1; i <= newNum; i++) {
+            arr.push(<Question key={i} number={i} handleQuestionChange={this.handleQuestionChange} />);
+        }
+
+        this.setState({ questions: arr});
+        this.setState({ numQuestions: newNum });
+
+        // add number of questions field to firebase
+        db.ref('quizzes/' + this.state.name).set({
+            numberOfQuestions: this.state.numQuestions,
+        });
+
+        // disable text field so the list of questions can't be changed again
         document.getElementById('number-of-questions').disabled = true;
+
         this.render();
     }
-
-    addQuizToDB(e) {
-        e.preventDefault();
-        /* Send the quiz to Firebase */
-        base.database().ref('quizzes').push(); //TODO: put stuff to push inside push()
-        this.inputEl.value = ''; // <- clear the input
-      }
 
     render() {
         return (
@@ -49,12 +60,11 @@ class Quiz extends React.Component {
                     <Typography variant="h2"> {this.state.name} </Typography>
                 </Grid>
 
-                //TODO make this a form
-                 <Grid item xs={10}>
+                <Grid item xs={10}>
                     <TextField
                         label='Quiz Name'
                         fullWidth
-                        required={true}
+                        //required={true}
                         variant='outlined'
                         onChange={e => this.handleNameChange(e.target.value)}
                     />
@@ -64,7 +74,7 @@ class Quiz extends React.Component {
                         id='number-of-questions'
                         label='# of Questions'
                         variant='outlined'
-                        required={true}
+                        //required={true}
                         disabled={false}
                         onChange={e => this.handleNumQuestionsChange(e.target.value)}
                     />
@@ -78,8 +88,7 @@ class Quiz extends React.Component {
                     fullWidth
                     variant='contained'
                     color='primary'
-                    //disabled={true}
-                    type='submit'
+                    //disabled={true} TODO only enable this button when everything is filled out
                     size='large'
                 >
                     Submit

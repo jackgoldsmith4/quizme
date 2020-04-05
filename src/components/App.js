@@ -3,22 +3,16 @@ import { Link } from 'react-router-dom';
 import { Container, Button, Grid, Typography } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Quiz from './Quiz.js';
-import base from '../base.js';
+import db from '../base.js';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            quizzes: [],
-        }
     }
 
-    componentWillMount() {
-        let quizzesRef = base.database().ref('quizzes');
-        quizzesRef.on('child_added', snapshot => {
-            /* Update React state when message is added at Firebase Database */
-            let quiz = { name: snapshot.val(), id: snapshot.key };
-            this.setState({ quizzes: [quiz].concat(this.state.quizzes) });
+    getQuizList() {
+        let questions = db.ref('quizzes').on('value', function(snapshot) {
+            console.log(snapshot.val());
         });
     }
 
@@ -30,6 +24,8 @@ class App extends React.Component {
                     <Typography variant="h2"> Welcome to QuizMe! </Typography>
                 </Grid>
                 <Grid item xs={12} /><Grid item xs={12} />
+
+                {this.getQuizList()}
                 <Button
                     component={Link}
                     to='/create-quiz'
@@ -40,6 +36,7 @@ class App extends React.Component {
                 >
                     Create a Quiz
                 </Button>
+
             </React.Fragment>
         );
     }
