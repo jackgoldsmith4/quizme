@@ -2,6 +2,7 @@ import React from 'react';
 import Question from './Question.js';
 import { Link } from 'react-router-dom';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import base from './base';
 
 class Quiz extends React.Component {
     constructor(props) {
@@ -33,6 +34,13 @@ class Quiz extends React.Component {
         this.render();
     }
 
+    addQuizToDB(e) {
+        e.preventDefault();
+        /* Send the quiz to Firebase */
+        base.database().ref('quizzes').push(); //TODO: put stuff to push inside push()
+        this.inputEl.value = ''; // <- clear the input
+      }
+
     render() {
         return (
             <React.Fragment>
@@ -41,6 +49,7 @@ class Quiz extends React.Component {
                     <Typography variant="h2"> {this.state.name} </Typography>
                 </Grid>
 
+                //TODO make this a form
                  <Grid item xs={10}>
                     <TextField
                         label='Quiz Name'
