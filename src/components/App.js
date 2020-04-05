@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Button, Grid, Typography } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Quiz from './Quiz.js';
-import base from './base/js';
+import base from '../base.js';
 
 class App extends React.Component {
     constructor(props) {

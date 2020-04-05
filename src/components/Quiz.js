@@ -2,7 +2,7 @@ import React from 'react';
 import Question from './Question.js';
 import { Link } from 'react-router-dom';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
-import base from './base';
+import base from '../base.js';
 
 class Quiz extends React.Component {
     constructor(props) {
