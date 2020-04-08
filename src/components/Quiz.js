@@ -15,18 +15,6 @@ class Quiz extends React.Component {
         this.handleQuestionChange = this.handleQuestionChange.bind(this);
     }
 
-    // retrieves data about each Question component and adds to firebase
-    handleQuestionChange(q, a1, a2, a3, a4, c, num) {
-        db.ref('quizzes/' + this.state.name + '/questions/' + num).set({
-            questionName: q,
-            answer1: a1,
-            answer2: a2,
-            answer3: a3,
-            answer4: a4,
-            correctAnswer: c,
-        })
-    }
-
     handleNameChange(newName) {
         this.setState({ name: newName });
     }
@@ -50,6 +38,18 @@ class Quiz extends React.Component {
         document.getElementById('number-of-questions').disabled = true;
 
         this.render();
+    }
+
+    // retrieves data about each Question component and adds to firebase
+    handleQuestionChange(q, a1, a2, a3, a4, c, num) {
+        db.ref('quizzes/' + this.state.name + '/questions/' + num).set({
+            questionName: q,
+            answer1: a1,
+            answer2: a2,
+            answer3: a3,
+            answer4: a4,
+            correctAnswer: c,
+        })
     }
 
     render() {

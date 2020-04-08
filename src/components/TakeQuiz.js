@@ -17,6 +17,9 @@ class TakeQuiz extends React.Component {
                 <Grid container direction='row' justify='center' alignItems='center'>
                     <Typography variant="h2"> {this.state.quizName} </Typography>
                 </Grid>
+
+                <Grid item xs={12} /><Grid item xs={12} />
+
             </React.Fragment>
         );
     }
