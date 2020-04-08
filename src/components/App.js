@@ -6,10 +6,20 @@ import { Container, Grid } from '@material-ui/core';
 import Home from './Home.js';
 import Quiz from './Quiz.js';
 import TakeQuiz from './TakeQuiz.js';
+import db from '../base.js';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.getQuizName = this.getQuizName.bind(this);
+        this.state = {
+            currentName: '',
+        }
+    }
+
+    // retrieves the name of a quiz from the child Home component that was clicked on and is to be taken
+    getQuizName(name) {
+        this.setState({ currentName: name });
     }
 
     render() {
@@ -20,9 +30,9 @@ class App extends React.Component {
                     <Grid container spacing={3} alignItems='center'>
                         <BrowserRouter>
                             <Switch>
-                                <Route path='/take-quiz' component={TakeQuiz} />
+                                <Route path='/take-quiz' render={(childProps) => <TakeQuiz quizName={this.state.currentName} {...childProps} />} />
                                 <Route path='/create-quiz' component={Quiz} />
-                                <Route path='/' component={Home} />
+                                <Route path='/' render={(childProps) => <Home sendName={this.getQuizName} {...childProps} />} />
                             </Switch>
                         </BrowserRouter>
                     </Grid>

@@ -12,7 +12,10 @@ class Home extends React.Component {
 
         // get the list of quiz names from firebase to display
         db.ref('quizzes').once('value').then(snapshot => { this.setQuizButtons(snapshot.val()) });
+    }
 
+    handleClick(name, next) {
+        this.props.sendName(name);
     }
 
     setQuizButtons(quizList) {
@@ -22,10 +25,9 @@ class Home extends React.Component {
                 quizButtons: keys.map((name) =>
                     <Button
                         key={name}
-                        component={Link}
                         fullWidth
-                        to={{pathname: '/take-quiz', quizName: name}}
                         size='large'
+                        onClick={() => this.handleClick(name, this.props.history.push('/take-quiz'))}
                     >
                         {name}
                     </Button>

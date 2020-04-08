@@ -9,7 +9,6 @@ class Quiz extends React.Component {
         super(props);
         this.state = {
             name: 'Create Your Quiz',
-            numQuestions: 0,
             questions: [],
         }
         this.handleQuestionChange = this.handleQuestionChange.bind(this);
@@ -26,12 +25,11 @@ class Quiz extends React.Component {
             arr.push(<Question key={i} number={i} handleQuestionChange={this.handleQuestionChange} />);
         }
 
-        this.setState({ questions: arr});
-        this.setState({ numQuestions: newNum });
+        this.setState({ questions: arr });
 
         // add number of questions field to firebase
         db.ref('quizzes/' + this.state.name).set({
-            numberOfQuestions: this.state.numQuestions,
+            numQuestions: newNum,
         });
 
         // disable text field so the list of questions can't be changed again
