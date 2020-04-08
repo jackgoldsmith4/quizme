@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
+import { Button, Grid, Typography, ButtonGroup, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
 import db from '../base.js';
 
 class TakeQuiz extends React.Component {
@@ -8,49 +8,52 @@ class TakeQuiz extends React.Component {
         super(props);
         this.state = {
             score: 0,
-        }
+            scoreTracker: []
+        };
+        this.handleClick = this.handleClick.bind(this);
 
         // retrieve data about the specific quiz from firebase and use it to generate question components
         db.ref('quizzes/' + this.props.quizName).once('value').then(snapshot => { this.generateQuiz(snapshot.val()) });
     }
 
-    handleClick(e, q, answerNumber, correctNumber) {
-        if (answerNumber === correctNumber) {
-            this.state.score += 1;
-        }
-        e.currentTarget.style.backgroundColor='#add8e6';
-        //TODO disable the button group
+    handleClick() {
+        console.log(this.state.scoreTracker);
     }
 
     generateQuiz(quizData) {
         this.state.numQuestions = quizData.numQuestions;
 
+        // grow the array boolean array of scores to correct size
+        for (var i=0; i<this.state.numQuestions; i++) {
+            this.state.scoreTracker.push(false);
+        }
+
         var questions = quizData.questions.slice(1);
         this.setState({
             questions: questions.map((q) =>
                 <Grid key={q.questionName} container alignItems='center'>
-                    <Grid key={q.questionName} container justify='center' alignItems='center'>
+                    <Grid container justify='center' alignItems='center'>
                         <Typography variant='h3'> {q.questionName} </Typography>
                     </Grid>
 
                     <Grid item xs={12} /><Grid item xs={12} />
 
                      <ButtonGroup
+                             component={RadioGroup}
                              id={q}
                              fullWidth
                              orientation='vertical'
                              variant='contained'
-                             disabled={false}
+                             onChange={this.handleClick}
                      >
-                            <Button onClick={(e) => this.handleClick(e, q, 1, q.correctAnswer)}> {q.answer1} </Button>
-                            <Button onClick={(e) => this.handleClick(e, q, 2, q.correctAnswer)}> {q.answer2} </Button>
-                            <Button onClick={(e) => this.handleClick(e, q, 3, q.correctAnswer)}> {q.answer3} </Button>
-                            <Button onClick={(e) => this.handleClick(e, q, 4, q.correctAnswer)}> {q.answer4} </Button>
+                            <Button component={FormControlLabel} control={<Radio color='primary' />} label={q.answer1} value='1'> </Button>
+                            <Button component={FormControlLabel} control={<Radio color='primary'/> } label={q.answer2} value='2'> </Button>
+                            <Button component={FormControlLabel} control={<Radio color='primary'/> } label={q.answer3} value='3'> </Button>
+                            <Button component={FormControlLabel} control={<Radio color='primary'/> } label={q.answer4} value='4'> </Button>
                      </ButtonGroup>
                      <Grid item xs={12} /><Grid item xs={12} />
                      <Grid item xs={12} /><Grid item xs={12} />
-                     <Grid item xs={12} /><Grid item xs={12} />
-                 </Grid>
+                </Grid>
             )
         })
     }
@@ -62,10 +65,21 @@ class TakeQuiz extends React.Component {
                 <Grid container direction='row' justify='center' alignItems='center'>
                     <Typography variant="h2"> {this.props.quizName} </Typography>
                 </Grid>
-
                 <Grid item xs={12} /><Grid item xs={12} />
 
                 {this.state.questions}
+
+                <Grid item xs={12} /><Grid item xs={12} />
+
+                <Button
+                    fullWidth
+                    variant='contained'
+                    color='primary'
+                    size='large'
+                    onClick={this.handleClick}
+                >
+                    Grade my Quiz
+                </Button>
 
                 <Grid item xs={12} /><Grid item xs={12} />
             </React.Fragment>
