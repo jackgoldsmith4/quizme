@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Grid, Typography, Paper } from '@material-ui/core';
+import { Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
 import db from '../base.js';
 
 class TakeQuiz extends React.Component {
@@ -10,7 +10,16 @@ class TakeQuiz extends React.Component {
             score: 0,
         }
 
+        // retrieve data about the specific quiz from firebase and use it to generate question components
         db.ref('quizzes/' + this.props.quizName).once('value').then(snapshot => { this.generateQuiz(snapshot.val()) });
+    }
+
+    handleClick(e, q, answerNumber, correctNumber) {
+        if (answerNumber === correctNumber) {
+            this.state.score += 1;
+        }
+        e.currentTarget.style.backgroundColor='#add8e6';
+        //TODO disable the button group
     }
 
     generateQuiz(quizData) {
@@ -20,58 +29,27 @@ class TakeQuiz extends React.Component {
         this.setState({
             questions: questions.map((q) =>
                 <Grid key={q.questionName} container alignItems='center'>
-                     <Grid item xs={12}>
-                        <Paper>
-                            <Typography variant='h3'> {q.questionName} </Typography>
-                        </Paper>
-                     </Grid>
-                     <Grid item xs={6} sm={6}>
-                         <Paper>
-                            <Button
-                                fullWidth
-                                variant='contained'
-                                //onClick={}
-                            >
-                                {q.answer1}
-                            </Button>
-                         </Paper>
-                     </Grid>
-                     <Grid item xs={6} sm={6}>
-                         <Paper>
-                            <Button
-                                fullWidth
-                                variant='contained'
-                                //onClick={}
-                            >
-                                {q.answer2}
-                            </Button>
-                         </Paper>
-                     </Grid>
-                     <Grid item xs={6} sm={6}>
-                         <Paper>
-                            <Button
-                                label={q.answer3}
-                                fullWidth
-                                variant='contained'
-                                //onClick={}
-                            >
-                                {q.answer3}
-                            </Button>
-                         </Paper>
-                     </Grid>
-                     <Grid item xs={6} sm={6}>
-                         <Paper>
-                            <Button
-                                fullWidth
-                                variant='contained'
-                                //onClick={}
-                            >
-                                {q.answer4}
-                            </Button>
-                         </Paper>
-                     </Grid>
-                     <Grid item xs={12} />
-                     <Grid item xs={12} />
+                    <Grid key={q.questionName} container justify='center' alignItems='center'>
+                        <Typography variant='h3'> {q.questionName} </Typography>
+                    </Grid>
+
+                    <Grid item xs={12} /><Grid item xs={12} />
+
+                     <ButtonGroup
+                             id={q}
+                             fullWidth
+                             orientation='vertical'
+                             variant='contained'
+                             disabled={false}
+                     >
+                            <Button onClick={(e) => this.handleClick(e, q, 1, q.correctAnswer)}> {q.answer1} </Button>
+                            <Button onClick={(e) => this.handleClick(e, q, 2, q.correctAnswer)}> {q.answer2} </Button>
+                            <Button onClick={(e) => this.handleClick(e, q, 3, q.correctAnswer)}> {q.answer3} </Button>
+                            <Button onClick={(e) => this.handleClick(e, q, 4, q.correctAnswer)}> {q.answer4} </Button>
+                     </ButtonGroup>
+                     <Grid item xs={12} /><Grid item xs={12} />
+                     <Grid item xs={12} /><Grid item xs={12} />
+                     <Grid item xs={12} /><Grid item xs={12} />
                  </Grid>
             )
         })
