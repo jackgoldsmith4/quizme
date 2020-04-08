@@ -42,6 +42,7 @@ class Quiz extends React.Component {
     handleQuestionChange(q, a1, a2, a3, a4, c, num) {
         db.ref('quizzes/' + this.state.name + '/questions/' + num).set({
             questionName: q,
+            questionNumber: num,
             answer1: a1,
             answer2: a2,
             answer3: a3,

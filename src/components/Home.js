@@ -52,13 +52,10 @@ class Home extends React.Component {
                     <Typography variant='h4'> Take a quiz: </Typography>
                 </Grid>
 
-                <Grid item xs={12} /><Grid item xs={12} />
-
                 {this.state.quizButtons}
 
                 <Grid item xs={12} /><Grid item xs={12} />
-                <Grid item xs={12} /><Grid item xs={12} />
-                <Grid item xs={12} /><Grid item xs={12} />
+
                 <Button
                     component={Link}
                     to='/create-quiz'
