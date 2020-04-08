@@ -24,7 +24,7 @@ class App extends React.Component {
                         key={name}
                         component={Link}
                         fullWidth
-                        to='/take-quiz'
+                        to={{pathname: '/take-quiz', quizName: name}}
                         size='large'
                     >
                         {name}
