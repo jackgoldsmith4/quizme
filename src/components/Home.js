@@ -4,14 +4,26 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import db from '../base.js';
 
 class Home extends React.Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
             quizButtons: [],
         }
 
+        this.setQuizButtons = this.setQuizButtons.bind(this);
+
         // get the list of quiz names from firebase to display
         db.ref('quizzes').once('value').then(snapshot => { this.setQuizButtons(snapshot.val()) });
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     handleClick(name, next) {
@@ -19,7 +31,7 @@ class Home extends React.Component {
     }
 
     setQuizButtons(quizList) {
-        if (quizList) {
+        if (quizList && this._isMounted) {
             var keys = Object.keys(quizList);
             this.setState({
                 quizButtons: keys.map((name) =>
