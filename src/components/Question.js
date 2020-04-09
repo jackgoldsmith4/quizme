@@ -6,12 +6,12 @@ class Question extends React.Component {
         super(props);
         this.state = {
             questionName: '',
+            number: this.props.number,
             answer1: '',
             answer2: '',
             answer3: '',
             answer4: '',
             correctAnswer: 0,
-            number: this.props.number,
         }
         this.handleQuestionSubmit=this.handleQuestionSubmit.bind(this);
     }
