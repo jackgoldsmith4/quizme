@@ -1,15 +1,25 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Grid, Typography, ButtonGroup, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
 import db from '../base.js';
 
-class TakeQuiz extends React.Component {
-    constructor(props) {
+interface TakeQuizState {
+    score: number;
+    scoreTracker: Array<boolean>;
+    scoreMessage: '' | JSX.Element;
+    questions: '' | Array<JSX.Element>;
+    numQuestions: number;
+}
+
+class TakeQuiz extends React.Component<any, TakeQuizState> {
+    constructor(props: any) {
         super(props);
         this.state = {
             score: 0,
             scoreTracker: [],
             scoreMessage: '',
+            questions: '',
+            numQuestions: -1
         };
 
         this.gradeQuiz = this.gradeQuiz.bind(this);
@@ -20,12 +30,13 @@ class TakeQuiz extends React.Component {
     }
 
     gradeQuiz() {
-        this.setState({ score: 0 });
+        var newScore: number = 0;
         this.state.scoreTracker.map(bool => {
             if (bool) {
-                this.state.score++;
+                newScore++;
             }
         })
+        this.setState({ score: newScore });
 
         this.setState({ scoreMessage: (
             <Grid container direction='row' justify='center' alignItems='center'>
@@ -45,25 +56,25 @@ class TakeQuiz extends React.Component {
         )});
     }
 
-    handleChange(e, correct, index) {
-        if (e.target.value == correct) {
+    handleChange(c: number, correct: number, index: number) { //TODO typecheck e
+        if (c == correct) {
             this.state.scoreTracker[index] = true;
         } else {
             this.state.scoreTracker[index] = false;
         }
     }
 
-    generateQuiz(quizData) {
-        this.state.numQuestions = quizData.numQuestions;
+    generateQuiz(quizData: any) { // TODO typecheck quizData
+        this.setState({numQuestions: quizData.numQuestions});
 
         // grow the array boolean array of scores to correct size
         for (var i=0; i<this.state.numQuestions; i++) {
             this.state.scoreTracker.push(false);
         }
 
-        var questions = quizData.questions.slice(1);
+        var questions: Array<any> = quizData.questions.slice(1); // TODO typecheck
         this.setState({
-            questions: questions.map((q) =>
+            questions: questions.map(q =>
                 <Grid key={q.questionNumber} container alignItems='center'>
                     <Grid container justify='center' alignItems='center'>
                         <Typography variant='h4'> {q.questionName} </Typography>
@@ -75,12 +86,32 @@ class TakeQuiz extends React.Component {
                              fullWidth
                              orientation='vertical'
                              variant='contained'
-                             onChange={(e) => this.handleChange(e, q.correctAnswer, q.questionNumber-1)}
+                             onChange={(e: any) => this.handleChange(e.target.value, q.correctAnswer, q.questionNumber-1)}
                      >
-                            <Button component={FormControlLabel} control={<Radio color='primary' />} label={q.answer1} value='1'> </Button>
-                            <Button component={FormControlLabel} control={<Radio color='primary'/> } label={q.answer2} value='2'> </Button>
-                            <Button component={FormControlLabel} control={<Radio color='primary'/> } label={q.answer3} value='3'> </Button>
-                            <Button component={FormControlLabel} control={<Radio color='primary'/> } label={q.answer4} value='4'> </Button>
+                        <Button 
+                            value='1' 
+                            component={FormControlLabel} 
+                            control={<Radio color='primary' />} 
+                            label={q.answer1}
+                        />
+                        <Button 
+                            value='2' 
+                            component={FormControlLabel} 
+                            control={<Radio color='primary' />} 
+                            label={q.answer2}
+                        />
+                        <Button 
+                            value='3' 
+                            component={FormControlLabel} 
+                            control={<Radio color='primary' />} 
+                            label={q.answer3}
+                        />
+                        <Button 
+                            value='4' 
+                            component={FormControlLabel} 
+                            control={<Radio color='primary' />} 
+                            label={q.answer4}
+                        />
                      </ButtonGroup>
                 </Grid>
             )

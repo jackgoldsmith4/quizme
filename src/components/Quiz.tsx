@@ -1,11 +1,21 @@
-import React from 'react';
-import Question from './Question.js';
-import { Link } from 'react-router-dom';
+import * as React from 'react';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import Question from './Question';
 import db from '../base.js';
 
-class Quiz extends React.Component {
-    constructor(props) {
+interface QuizProps {
+    history: any; // TODO typecheck history prop
+}
+
+interface QuizState {
+    name: string;
+    numQuestions: number;
+    questionComponents: Array<JSX.Element>;
+    questions: Array<any>;
+}
+
+class Quiz extends React.Component<QuizProps, QuizState> {
+    constructor(props: any) {
         super(props);
         this.state = {
             name: 'Create Your Quiz',
@@ -16,34 +26,35 @@ class Quiz extends React.Component {
         this.handleQuestionChange = this.handleQuestionChange.bind(this);
     }
 
-    handleNameChange(newName) {
+    handleNameChange(newName: string) {
         this.setState({ name: newName });
     }
 
-    handleNumQuestionsChange(newNum) {
+    handleNumQuestionsChange(newNum: number) {
         if (newNum >= 0) {
             // render question components
-            var arr = this.state.questionComponents.slice(0);
+            var arr: JSX.Element[] = this.state.questionComponents.slice(0);
+            var newNumber: number = newNum;
 
             if (newNum > this.state.numQuestions) {
                 for (var i=this.state.numQuestions; i<newNum; i++) {
                     arr.push(<Question key={i+1} number={i+1} handleQuestionChange={this.handleQuestionChange} />);
-                    this.state.numQuestions++;
+                    newNumber++;
                 }
             } else if (newNum < this.state.numQuestions) {
-                for (var i=newNum; i<this.state.numQuestions; i++) {
+                for (i=newNum; i<this.state.numQuestions; i++) {
                     arr.pop();
-                    this.state.numQuestions--;
+                    newNumber--;
                 }
             }
 
             this.setState({ questionComponents: arr });
-            //this.setState({ numQuestions: newNum });
+            this.setState({ numQuestions: newNumber });
         }
     }
 
     // retrieves data about from a child Question component
-    handleQuestionChange(q, a1, a2, a3, a4, c, num) {
+    handleQuestionChange(q: string, a1: string, a2: string, a3: string, a4: string, c: number, num: number) {
         var question = {
             questionName: q,
             questionNumber: num,
@@ -57,7 +68,7 @@ class Quiz extends React.Component {
         this.state.questions[num-1] = question;
     }
 
-    handleSubmit(e, next) {
+    handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, next: Function) {
         if (this.state.numQuestions != this.state.questions.length || this.state.numQuestions == 0) {
             alert("Please fill out all questions or change the number of questions");
         } else {
@@ -98,7 +109,7 @@ class Quiz extends React.Component {
                         type='number'
                         defaultValue={0}
                         //required={true}
-                        onChange={e => this.handleNumQuestionsChange(e.target.value)}
+                        onChange={e => this.handleNumQuestionsChange(Number(e.target.value))}
                     />
                 </Grid>
                 <Grid item xs={12} /><Grid item xs={12} />

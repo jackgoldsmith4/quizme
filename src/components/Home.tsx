@@ -1,12 +1,21 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Grid, Typography } from '@material-ui/core';
 import db from '../base.js';
 
-class Home extends React.Component {
-    _isMounted = false;
+interface HomeProps {
+    sendName: Function;
+    history: any; // TODO typecheck history prop
+}
 
-    constructor(props) {
+interface HomeState {
+    quizButtons: JSX.Element[];
+}
+
+class Home extends React.Component<HomeProps, HomeState> {
+    _isMounted: boolean = false;
+
+    constructor(props: any) {
         super(props);
         this.state = {
             quizButtons: [],
@@ -26,11 +35,11 @@ class Home extends React.Component {
         this._isMounted = false;
     }
 
-    handleClick(name, next) {
+    handleClick(name: string, next: any) {
         this.props.sendName(name);
     }
 
-    setQuizButtons(quizList) {
+    setQuizButtons(quizList: JSON) {
         if (quizList && this._isMounted) {
             var keys = Object.keys(quizList);
             this.setState({
@@ -68,13 +77,12 @@ class Home extends React.Component {
 
                 <Grid item xs={12} /><Grid item xs={12} />
 
-                <Button
-                    component={Link}
-                    to='/create-quiz'
+                <Button 
                     fullWidth
                     variant='contained'
                     color='primary'
                     size='large'
+                    component={Link} {...{ to: '/create-quiz' } as any}
                 >
                     Create a Quiz
                 </Button>

@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "module": "es6",
+        "jsx": "react",
+        "target": "es5",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "lib": ["es6", "dom"],
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "moduleResolution": "node"
+    },
+    "include": [
+        "./src/**/*",
+        "index.tsx"
+    ]
+}

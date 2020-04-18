@@ -1,15 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Container, Grid } from '@material-ui/core';
-import Home from './Home.js';
-import Quiz from './Quiz.js';
-import TakeQuiz from './TakeQuiz.js';
-import db from '../base.js';
+import Home from './Home';
+import Quiz from './Quiz';
+import TakeQuiz from './TakeQuiz';
 
-class App extends React.Component {
-    constructor(props) {
+interface AppState {
+    currentName: string;
+}
+
+class App extends React.Component<{}, AppState> {
+    constructor(props: any) {
         super(props);
         this.getQuizName = this.getQuizName.bind(this);
         this.state = {
@@ -18,7 +20,7 @@ class App extends React.Component {
     }
 
     // retrieves the name of a quiz from the child Home component that was clicked on and is to be taken
-    getQuizName(name) {
+    getQuizName(name: string) {
         this.setState({ currentName: name });
     }
 

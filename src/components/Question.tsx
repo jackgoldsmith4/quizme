@@ -1,8 +1,23 @@
-import React from 'react';
+import * as React from 'react';
 import { Grid, Paper, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Button } from '@material-ui/core';
 
-class Question extends React.Component {
-    constructor(props) {
+interface QuestionProps {
+    number: number;
+    handleQuestionChange: Function;
+}
+
+interface QuestionState {
+    questionName: string;
+    number: number;
+    answer1: string;
+    answer2: string;
+    answer3: string;
+    answer4: string;
+    correctAnswer: number;
+}
+
+class Question extends React.Component<QuestionProps, QuestionState> {
+    constructor(props: any) {
         super(props);
         this.state = {
             questionName: '',
@@ -16,11 +31,11 @@ class Question extends React.Component {
         this.handleQuestionSubmit=this.handleQuestionSubmit.bind(this);
     }
 
-    handleQuestionNameChange(newQuestion) {
+    handleQuestionNameChange(newQuestion: string) {
         this.setState({questionName: newQuestion})
     }
 
-    handleAnswerChange(newAnswer, answerNumber) {
+    handleAnswerChange(newAnswer: string, answerNumber: number) {
         switch (answerNumber) {
             case 1:
                 this.setState({answer1: newAnswer});
@@ -39,19 +54,19 @@ class Question extends React.Component {
         }
     }
 
-    handleRadioChange(correctAnswerNum, next) {
+    handleRadioChange(correctAnswerNum: number, next: Function) {
         //TODO what is the difference between these lines?
         //first one logs correct answer below, second one keeps the button checked correctly
-        this.state.correctAnswer = correctAnswerNum;
+        //this.state.correctAnswer = correctAnswerNum;
         this.setState({correctAnswer: correctAnswerNum});
         //console.log(this.state.correctAnswer);
         next();
     }
 
     // add the number of the question to the question's label
-    genQuestionLabel(number) {
+    genQuestionLabel(number: number) {
         var q = 'Question ';
-        return q.concat(number);
+        return q.concat(number.toString());
     }
 
     // update the parent component with information about this question
