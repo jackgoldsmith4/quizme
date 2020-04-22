@@ -7,54 +7,37 @@ interface QuizProps {
     history: any; // TODO typecheck history prop
 }
 
-interface QuizState {
-    name: string;
-    numQuestions: number;
-    questionComponents: Array<JSX.Element>;
-    questions: Array<any>;
-}
+const Quiz: React.FC<QuizProps> = (props) => {
+    const [name, setName] = React.useState<string>('Create your Quiz');
+    const [numQuestions, setNumQuestions] = React.useState<number>(0);
+    const [questionComponents, setQuestionComponents] = React.useState<JSX.Element[]>([]);
+    const [questions, setQuestions] = React.useState<any[]>([]);
 
-class Quiz extends React.Component<QuizProps, QuizState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            name: 'Create Your Quiz',
-            numQuestions: 0,
-            questionComponents: [],
-            questions: [],
-        }
-        this.handleQuestionChange = this.handleQuestionChange.bind(this);
-    }
-
-    handleNameChange(newName: string) {
-        this.setState({ name: newName });
-    }
-
-    handleNumQuestionsChange(newNum: number) {
+    const handleNumQuestionsChange = (newNum: number) =>  {
         if (newNum >= 0) {
             // render question components
-            var arr: JSX.Element[] = this.state.questionComponents.slice(0);
+            var arr: JSX.Element[] = questionComponents.slice(0);
             var newNumber: number = newNum;
 
-            if (newNum > this.state.numQuestions) {
-                for (var i=this.state.numQuestions; i<newNum; i++) {
-                    arr.push(<Question key={i+1} number={i+1} handleQuestionChange={this.handleQuestionChange} />);
+            if (newNum > numQuestions) {
+                for (var i=numQuestions; i<newNum; i++) {
+                    arr.push(<Question key={i+1} number={i+1} handleQuestionChange={handleQuestionChange} />);
                     newNumber++;
                 }
-            } else if (newNum < this.state.numQuestions) {
-                for (i=newNum; i<this.state.numQuestions; i++) {
+            } else if (newNum < numQuestions) {
+                for (i=newNum; i<numQuestions; i++) {
                     arr.pop();
                     newNumber--;
                 }
             }
 
-            this.setState({ questionComponents: arr });
-            this.setState({ numQuestions: newNumber });
+            setQuestionComponents(arr);
+            setNumQuestions(newNumber);
         }
     }
 
-    // retrieves data about from a child Question component
-    handleQuestionChange(q: string, a1: string, a2: string, a3: string, a4: string, c: number, num: number) {
+    // retrieves data from a child Question component
+    const handleQuestionChange = (q: string, a1: string, a2: string, a3: string, a4: string, c: number, num: number) => {
         var question = {
             questionName: q,
             questionNumber: num,
@@ -65,71 +48,72 @@ class Quiz extends React.Component<QuizProps, QuizState> {
             correctAnswer: c,
         }
 
-        this.state.questions[num-1] = question;
+        var arr = questions;
+        arr[num-1] = question;
+        setQuestions(arr);
     }
 
-    handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, next: Function) {
-        if (this.state.numQuestions != this.state.questions.length || this.state.numQuestions == 0) {
-            alert("Please fill out all questions or change the number of questions");
-        } else {
-            // add number of questions field to firebase
-            db.ref('quizzes/' + this.state.name).set({
-                numQuestions: this.state.numQuestions,
-            });
+    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        // TODO add validation here to make sure necessary fields are filled out correctly
 
-            // add data about each question
-            this.state.questions.map(q => {
-                db.ref('quizzes/' + this.state.name + '/questions/' + q.questionNumber).set(q);
-            });
-        }
+        // add number of questions field to firebase
+        db.ref('quizzes/' + name).set({
+            numQuestions: numQuestions,
+        });
+
+        // add data about each question
+        questions.map(q => {
+            db.ref('quizzes/' + name + '/questions/' + q.questionNumber).set(q);
+        });
+
+        props.history.push('/');
     }
 
-    render() {
-        return (
-            <React.Fragment>
-                <Grid item xs={12} /><Grid item xs={12} />
-                <Grid container direction='row' justify='center' alignItems='center'>
-                    <Typography variant="h2"> {this.state.name} </Typography>
-                </Grid>
 
-                <Grid item xs={10}>
-                    <TextField
-                        label='Quiz Name'
-                        fullWidth
-                        //required={true}
-                        variant='outlined'
-                        onChange={e => this.handleNameChange(e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        id='number-of-questions'
-                        label='# of Questions'
-                        variant='outlined'
-                        type='number'
-                        defaultValue={0}
-                        //required={true}
-                        onChange={e => this.handleNumQuestionsChange(Number(e.target.value))}
-                    />
-                </Grid>
-                <Grid item xs={12} /><Grid item xs={12} />
+    return (
+        <React.Fragment>
+            <Grid item xs={12} /><Grid item xs={12} />
+            <Grid container direction='row' justify='center' alignItems='center'>
+                <Typography variant="h2"> {name} </Typography>
+            </Grid>
 
-                {this.state.questionComponents}
-
-                <Button
+            <Grid item xs={10}>
+                <TextField
+                    label='Quiz Name'
                     fullWidth
-                    variant='contained'
-                    color='primary'
-                    //disabled={true} TODO only enable this button when everything is filled out
-                    size='large'
-                    onClick={(e) => this.handleSubmit(e, this.props.history.push('/'))}
-                >
-                    Submit
-                </Button>
-                <Grid item xs={12} /><Grid item xs={12} />
-            </React.Fragment>
-        );
-    }
+                    //required={true}
+                    variant='outlined'
+                    onChange={e => setName(e.target.value)}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <TextField
+                    id='number-of-questions'
+                    label='# of Questions'
+                    variant='outlined'
+                    type='number'
+                    defaultValue={0}
+                    //required={true}
+                    onChange={e => handleNumQuestionsChange(Number(e.target.value))}
+                />
+            </Grid>
+            <Grid item xs={12} /><Grid item xs={12} />
+
+            {questionComponents}
+
+            <Button
+                fullWidth
+                variant='contained'
+                color='primary'
+                //disabled={true} TODO only enable this button when everything is filled out
+                size='large'
+                onClick={(e) => handleSubmit(e)}
+            >
+                Submit
+            </Button>
+            <Grid item xs={12} /><Grid item xs={12} />
+        </React.Fragment>
+    );
 }
 
 export default Quiz;

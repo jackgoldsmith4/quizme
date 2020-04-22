@@ -8,87 +8,63 @@ interface HomeProps {
     history: any; // TODO typecheck history prop
 }
 
-interface HomeState {
-    quizButtons: JSX.Element[];
-}
+const Home: React.FC<HomeProps> = (props) => {
+    const [quizButtons, setQuizButtons] = React.useState<JSX.Element[]>([]);
 
-class Home extends React.Component<HomeProps, HomeState> {
-    _isMounted: boolean = false;
-
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            quizButtons: [],
-        }
-
-        this.setQuizButtons = this.setQuizButtons.bind(this);
-
-        // get the list of quiz names from firebase to display
-        db.ref('quizzes').once('value').then(snapshot => { this.setQuizButtons(snapshot.val()) });
+    const handleClick = (name: string) => {
+        props.sendName(name);
+        props.history.push('/take-quiz');
     }
 
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-
-    handleClick(name: string, next: any) {
-        this.props.sendName(name);
-    }
-
-    setQuizButtons(quizList: JSON) {
-        if (quizList && this._isMounted) {
+    const generateQuizButtons = (quizList: JSON) => {
+        if (quizList) { // TODO add FC equivalent to checking if this is component is mounted here as well
             var keys = Object.keys(quizList);
-            this.setState({
-                quizButtons: keys.map((name) =>
-                    <Button
-                        key={name}
-                        fullWidth
-                        size='large'
-                        onClick={() => this.handleClick(name, this.props.history.push('/take-quiz'))}
-                    >
-                        {name}
-                    </Button>
-                )
-            })
+            var newButtons: JSX.Element[] = keys.map((name) =>
+                <Button
+                    key={name}
+                    fullWidth
+                    size='large'
+                    onClick={() => handleClick(name)}
+                >
+                    {name}
+                </Button>
+            );
+            setQuizButtons(newButtons);
         }
     }
 
-    render() {
-        return (
-            <React.Fragment>
-                <Grid item xs={12} /><Grid item xs={12} />
+    db.ref('quizzes').once('value').then(snapshot => generateQuizButtons(snapshot.val()));
 
-                <Grid container direction='row' justify='center' alignItems='center'>
-                    <Typography variant="h2"> Welcome to QuizMe! </Typography>
-                </Grid>
+    return (
+        <React.Fragment>
+            <Grid item xs={12} /><Grid item xs={12} />
 
-                <Grid item xs={12} /><Grid item xs={12} />
-                <Grid item xs={12} /><Grid item xs={12} />
+            <Grid container direction='row' justify='center' alignItems='center'>
+                <Typography variant="h2"> Welcome to QuizMe! </Typography>
+            </Grid>
 
-                <Grid container direction='row' justify='center' alignItems='center'>
-                    <Typography variant='h4'> Take a quiz: </Typography>
-                </Grid>
+            <Grid item xs={12} /><Grid item xs={12} />
+            <Grid item xs={12} /><Grid item xs={12} />
 
-                {this.state.quizButtons}
+            <Grid container direction='row' justify='center' alignItems='center'>
+                <Typography variant='h4'> Take a quiz: </Typography>
+            </Grid>
 
-                <Grid item xs={12} /><Grid item xs={12} />
+            {quizButtons}
 
-                <Button 
-                    fullWidth
-                    variant='contained'
-                    color='primary'
-                    size='large'
-                    component={Link} {...{ to: '/create-quiz' } as any}
-                >
-                    Create a Quiz
-                </Button>
-            </React.Fragment>
-        );
-    }
+            <Grid item xs={12} /><Grid item xs={12} />
+
+            <Button 
+                fullWidth
+                variant='contained'
+                color='primary'
+                size='large'
+                component={Link} {...{ to: '/create-quiz' } as any}
+            >
+                Create a Quiz
+            </Button>
+        </React.Fragment>
+    );
 }
 
 export default Home;

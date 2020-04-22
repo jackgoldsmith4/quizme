@@ -6,42 +6,25 @@ import Home from './Home';
 import Quiz from './Quiz';
 import TakeQuiz from './TakeQuiz';
 
-interface AppState {
-    currentName: string;
-}
+const App: React.FC = () => {
+    const [currentName, setName] = React.useState('');
 
-class App extends React.Component<{}, AppState> {
-    constructor(props: any) {
-        super(props);
-        this.getQuizName = this.getQuizName.bind(this);
-        this.state = {
-            currentName: '',
-        }
-    }
-
-    // retrieves the name of a quiz from the child Home component that was clicked on and is to be taken
-    getQuizName(name: string) {
-        this.setState({ currentName: name });
-    }
-
-    render() {
-        return (
-            <React.Fragment>
-                <CssBaseline />
-                <Container maxWidth='md'>
-                    <Grid container spacing={3} alignItems='center'>
-                        <BrowserRouter>
-                            <Switch>
-                                <Route path='/take-quiz' render={(childProps) => <TakeQuiz quizName={this.state.currentName} {...childProps} />} />
-                                <Route path='/create-quiz' component={Quiz} />
-                                <Route path='/' render={(childProps) => <Home sendName={this.getQuizName} {...childProps} />} />
-                            </Switch>
-                        </BrowserRouter>
-                    </Grid>
-                </Container>
-            </React.Fragment>
-        );
-    }
+    return (
+        <React.Fragment>
+            <CssBaseline />
+            <Container maxWidth='md'>
+                <Grid container spacing={3} alignItems='center'>
+                    <BrowserRouter>
+                        <Switch>
+                            <Route path='/take-quiz' render={(childProps) => <TakeQuiz quizName={currentName} {...childProps} />} />
+                            <Route path='/create-quiz' component={Quiz} />
+                            <Route path='/' render={(childProps) => <Home sendName={setName} {...childProps} />} />
+                        </Switch>
+                    </BrowserRouter>
+                </Grid>
+            </Container>
+        </React.Fragment>
+    );
 }
 
 export default App;
