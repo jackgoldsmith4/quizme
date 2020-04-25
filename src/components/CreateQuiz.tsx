@@ -3,11 +3,11 @@ import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import Question from './Question';
 import db from '../base.js';
 
-interface QuizProps {
+interface CreateQuizProps {
     history: any; // TODO typecheck history prop
 }
 
-const Quiz: React.FC<QuizProps> = (props) => {
+const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
     const [name, setName] = React.useState<string>('Create your Quiz');
     const [numQuestions, setNumQuestions] = React.useState<number>(0);
     const [questionComponents, setQuestionComponents] = React.useState<JSX.Element[]>([]);
@@ -116,4 +116,4 @@ const Quiz: React.FC<QuizProps> = (props) => {
     );
 }
 
-export default Quiz;
+export default CreateQuiz;
