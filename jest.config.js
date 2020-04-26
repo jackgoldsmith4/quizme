@@ -3,10 +3,10 @@ module.exports = {
 
     // add support for typescript using ts-jest
     transform: {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.(js|tsx)?$": "ts-jest",
     },
   
-    // cleans up components, adds special assertions to jest
+    // adds special assertions to jest
     setupFilesAfterEnv: [
       "@testing-library/jest-dom/extend-expect"
     ],

@@ -5,6 +5,7 @@ import db from '../base.js';
 
 interface TakeQuizProps {
     quizName: string;
+    history: any; // TODO typecheck history prop
 }
 
 const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
@@ -13,6 +14,10 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
     const [scoreMessage, setScoreMessage] = React.useState<any>('');
     const [questions, setQuestions] = React.useState<any>('');
     const [numQuestions, setNumQuestions] = React.useState<number>(-1);
+
+    const redirectToHome = () => {
+        props.history.push('/');
+    }
 
     const gradeQuiz = () => {
         var newScore: number = 0;
@@ -29,11 +34,10 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
                     <Typography variant='h4'> {score} / {numQuestions} Correct </Typography>
                 </Grid>
                 <Button
-                    component={Link}
-                    to='/'
                     variant='contained'
                     color='primary'
                     size='large'
+                    onClick={redirectToHome}
                 >
                     Return to Homepage
                 </Button>

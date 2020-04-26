@@ -11,20 +11,24 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = (props) => {
     const [quizButtons, setQuizButtons] = React.useState<JSX.Element[]>([]);
 
-    const handleClick = (name: string) => {
+    const handleTakeQuizClick = (name: string) => {
         props.sendName(name);
         props.history.push('/take-quiz');
     }
 
+    const handleCreateQuizClick = () => {
+        props.history.push('/create-quiz');
+    }
+
     const generateQuizButtons = (quizList: JSON) => {
-        if (quizList) { // TODO add FC equivalent to checking if this is component is mounted here as well
+        if (quizList) {
             var keys = Object.keys(quizList);
             var newButtons: JSX.Element[] = keys.map((name) =>
                 <Button
                     key={name}
                     fullWidth
                     size='large'
-                    onClick={() => handleClick(name)}
+                    onClick={() => handleTakeQuizClick(name)}
                 >
                     {name}
                 </Button>
@@ -59,7 +63,7 @@ const Home: React.FC<HomeProps> = (props) => {
                 variant='contained'
                 color='primary'
                 size='large'
-                component={Link} {...{ to: '/create-quiz' } as any}
+                onClick={handleCreateQuizClick}
             >
                 Create a Quiz
             </Button>

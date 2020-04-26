@@ -30,7 +30,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
                     newNumber--;
                 }
             }
-
+            
             setQuestionComponents(arr);
             setNumQuestions(newNumber);
         }
