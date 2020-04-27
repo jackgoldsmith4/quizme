@@ -5,14 +5,14 @@ import Home from '../components/Home';
 
 describe('Home Component', () => {
     test('render', async () => {
-        render(<Home sendName={() => null} history=''/>);
+        render(<Home />);
     });
 
-    test('Create a Quiz button', async () => {
+    test('create a quiz button', async () => {
         //TODO
     });
 
-    test ('Existing quiz button', async () => {
+    test ('existing quiz button', async () => {
         //TODO
     });
 });

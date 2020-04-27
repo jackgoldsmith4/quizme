@@ -1,24 +1,12 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Button, Grid, Typography } from '@material-ui/core';
 import db from '../base.js';
 
-interface HomeProps {
-    sendName: Function;
-    history: any; // TODO typecheck history prop
-}
+const Home: React.FC = () => {
+    let history = useHistory();
 
-const Home: React.FC<HomeProps> = (props) => {
     const [quizButtons, setQuizButtons] = React.useState<JSX.Element[]>([]);
-
-    const handleTakeQuizClick = (name: string) => {
-        props.sendName(name);
-        props.history.push('/take-quiz');
-    }
-
-    const handleCreateQuizClick = () => {
-        props.history.push('/create-quiz');
-    }
 
     const generateQuizButtons = (quizList: JSON) => {
         if (quizList) {
@@ -28,7 +16,10 @@ const Home: React.FC<HomeProps> = (props) => {
                     key={name}
                     fullWidth
                     size='large'
-                    onClick={() => handleTakeQuizClick(name)}
+                    onClick={() => history.push({
+                        pathname: '/take-quiz',
+                        state: { quizName: name }
+                    })}
                 >
                     {name}
                 </Button>
@@ -63,7 +54,7 @@ const Home: React.FC<HomeProps> = (props) => {
                 variant='contained'
                 color='primary'
                 size='large'
-                onClick={handleCreateQuizClick}
+                onClick={() => history.push('/create-quiz')}
             >
                 Create a Quiz
             </Button>

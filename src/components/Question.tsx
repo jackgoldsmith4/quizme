@@ -29,7 +29,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                 setAnswer4(newAnswer);
                 break;
             default:
-                throw new Error("Invalid correct answer choice");
+                throw new Error("Invalid answer number");
         }
     }
 

@@ -5,7 +5,7 @@ import CreateQuiz from '../components/CreateQuiz';
 
 describe('CreateQuiz Component', () => {
     test('render', async () => {
-        render(<CreateQuiz history='' />);
+        render(<CreateQuiz />);
     });
 
     test('name field filling out updates name in title', async () => {

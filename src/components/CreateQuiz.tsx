@@ -1,38 +1,33 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import Question from './Question';
 import db from '../base.js';
 
-interface CreateQuizProps {
-    history: any; // TODO typecheck history prop
-}
+const CreateQuiz: React.FC = () => {
+    let history = useHistory();
 
-const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
     const [name, setName] = React.useState<string>('Create your Quiz');
     const [numQuestions, setNumQuestions] = React.useState<number>(0);
     const [questionComponents, setQuestionComponents] = React.useState<JSX.Element[]>([]);
     const [questions, setQuestions] = React.useState<any[]>([]);
 
     const handleNumQuestionsChange = (newNum: number) =>  {
-        if (newNum >= 0) {
-            // render question components
+        if (newNum >= 1) {
             var arr: JSX.Element[] = questionComponents.slice(0);
-            var newNumber: number = newNum;
 
             if (newNum > numQuestions) {
                 for (var i=numQuestions; i<newNum; i++) {
                     arr.push(<Question key={i+1} number={i+1} handleQuestionChange={handleQuestionChange} />);
-                    newNumber++;
                 }
             } else if (newNum < numQuestions) {
                 for (i=newNum; i<numQuestions; i++) {
                     arr.pop();
-                    newNumber--;
                 }
             }
-            
+
             setQuestionComponents(arr);
-            setNumQuestions(newNumber);
+            setNumQuestions(newNum);
         }
     }
 
@@ -48,7 +43,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
             correctAnswer: c,
         }
 
-        var arr = questions;
+        var arr = questions.slice(0);
         arr[num-1] = question;
         setQuestions(arr);
     }
@@ -56,17 +51,15 @@ const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         // TODO add validation here to make sure necessary fields are filled out correctly
 
-        // add number of questions field to firebase
         db.ref('quizzes/' + name).set({
             numQuestions: numQuestions,
         });
 
-        // add data about each question
         questions.map(q => {
             db.ref('quizzes/' + name + '/questions/' + q.questionNumber).set(q);
         });
 
-        props.history.push('/');
+        history.push('/');
     }
 
 
@@ -81,7 +74,6 @@ const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
                 <TextField
                     label='Quiz Name'
                     fullWidth
-                    //required={true}
                     variant='outlined'
                     onChange={e => setName(e.target.value)}
                 />
@@ -93,7 +85,6 @@ const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
                     variant='outlined'
                     type='number'
                     defaultValue={0}
-                    //required={true}
                     onChange={e => handleNumQuestionsChange(Number(e.target.value))}
                 />
             </Grid>
@@ -105,7 +96,6 @@ const CreateQuiz: React.FC<CreateQuizProps> = (props) => {
                 fullWidth
                 variant='contained'
                 color='primary'
-                //disabled={true} TODO only enable this button when everything is filled out
                 size='large'
                 onClick={(e) => handleSubmit(e)}
             >

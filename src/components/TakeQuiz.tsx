@@ -1,23 +1,18 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Grid, Typography, ButtonGroup, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
 import db from '../base.js';
 
-interface TakeQuizProps {
-    quizName: string;
-    history: any; // TODO typecheck history prop
-}
+const TakeQuiz: React.FC = () => {
+    let history = useHistory();
+    //let location = useLocation();
 
-const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
+    const [quizName, setQuizName] = React.useState<string>('Example Quiz'); // TODO
     const [score, setScore] = React.useState<number>(0);
     const [scoreTracker, setScoreTracker] = React.useState<boolean[]>([]);
     const [scoreMessage, setScoreMessage] = React.useState<any>('');
     const [questions, setQuestions] = React.useState<any>('');
     const [numQuestions, setNumQuestions] = React.useState<number>(-1);
-
-    const redirectToHome = () => {
-        props.history.push('/');
-    }
 
     const gradeQuiz = () => {
         var newScore: number = 0;
@@ -37,7 +32,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
                     variant='contained'
                     color='primary'
                     size='large'
-                    onClick={redirectToHome}
+                    onClick={() => history.push('/')}
                 >
                     Return to Homepage
                 </Button>
@@ -112,13 +107,13 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
     }
 
     // retrieve data about the specific quiz from firebase and use it to generate question components
-    db.ref('quizzes/' + props.quizName).once('value').then(snapshot => { generateQuiz(snapshot.val()) });
+    db.ref('quizzes/' + quizName).once('value').then(snapshot => { generateQuiz(snapshot.val()) });
 
     return(
         <React.Fragment>
             <Grid item xs={12} /><Grid item xs={12} />
             <Grid container direction='row' justify='center' alignItems='center'>
-                <Typography variant="h2"> {props.quizName} </Typography>
+                <Typography variant="h2"> {quizName} </Typography>
             </Grid>
             <Grid item xs={12} /><Grid item xs={12} />
 
