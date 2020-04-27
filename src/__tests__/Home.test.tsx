@@ -5,7 +5,7 @@ import Home from '../components/Home';
 
 describe('Home Component', () => {
     test('render', async () => {
-        render(<Home />);
+        render(<Home sendQuizNameToTakeQuiz={() => null} />);
     });
 
     test('create a quiz button', async () => {

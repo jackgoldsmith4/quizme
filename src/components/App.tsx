@@ -7,6 +7,8 @@ import CreateQuiz from './CreateQuiz';
 import TakeQuiz from './TakeQuiz';
 
 const App: React.FC = () => {
+    const [quizName, updateQuizName] = React.useState<string>('');
+
     return (
         <React.Fragment>
             <CssBaseline />
@@ -14,8 +16,8 @@ const App: React.FC = () => {
                 <Grid container spacing={3} alignItems='center'>
                     <BrowserRouter>
                         <Switch>
-                            <Route path='/' exact component={Home} />} />
-                            <Route path='/take-quiz' component={TakeQuiz} />
+                            <Route path='/' exact render={(childProps) => <Home sendQuizNameToTakeQuiz={updateQuizName} {...childProps} />} />
+                            <Route path='/take-quiz' render={(childProps) => <TakeQuiz quizName={quizName} {...childProps} />} />
                             <Route path='/create-quiz' component={CreateQuiz} />
                         </Switch>
                     </BrowserRouter>

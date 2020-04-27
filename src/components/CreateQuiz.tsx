@@ -43,7 +43,7 @@ const CreateQuiz: React.FC = () => {
             correctAnswer: c,
         }
 
-        var arr = questions.slice(0);
+        var arr = questions;
         arr[num-1] = question;
         setQuestions(arr);
     }

@@ -3,10 +3,19 @@ import { useHistory } from 'react-router-dom';
 import { Button, Grid, Typography } from '@material-ui/core';
 import db from '../base.js';
 
-const Home: React.FC = () => {
+interface HomeProps {
+    sendQuizNameToTakeQuiz: (name: string) => void;
+}
+
+const Home: React.FC<HomeProps> = (props) => {
     let history = useHistory();
 
     const [quizButtons, setQuizButtons] = React.useState<JSX.Element[]>([]);
+
+    const sendQuizName = (name: string) => {
+        props.sendQuizNameToTakeQuiz(name);
+        history.push('/take-quiz');
+    }
 
     const generateQuizButtons = (quizList: JSON) => {
         if (quizList) {
@@ -16,10 +25,7 @@ const Home: React.FC = () => {
                     key={name}
                     fullWidth
                     size='large'
-                    onClick={() => history.push({
-                        pathname: '/take-quiz',
-                        state: { quizName: name }
-                    })}
+                    onClick={() => sendQuizName(name)}
                 >
                     {name}
                 </Button>
@@ -28,7 +34,9 @@ const Home: React.FC = () => {
         }
     }
 
-    db.ref('quizzes').once('value').then(snapshot => generateQuizButtons(snapshot.val()));
+    React.useEffect(() => {
+        db.ref('quizzes').once('value').then(snapshot => generateQuizButtons(snapshot.val()));
+    }, []);
 
     return (
         <React.Fragment>

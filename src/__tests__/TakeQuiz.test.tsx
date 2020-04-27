@@ -5,7 +5,7 @@ import TakeQuiz from '../components/TakeQuiz';
 
 describe('TakeQuiz Component', () => {
     test('render', async () => {
-        render(<TakeQuiz />);
+        render(<TakeQuiz quizName=''/>);
     });
 
     test('can take the quiz: question buttons work', async () => {

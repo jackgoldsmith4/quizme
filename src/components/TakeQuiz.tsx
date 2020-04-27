@@ -1,27 +1,27 @@
 import * as React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { Button, Grid, Typography, ButtonGroup, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
+import { Button, Grid, Typography, Paper, Radio, RadioGroup, FormControl, FormControlLabel } from '@material-ui/core';
 import db from '../base.js';
 
-const TakeQuiz: React.FC = () => {
-    let history = useHistory();
-    //let location = useLocation();
+interface TakeQuizProps {
+    quizName: string;
+}
 
-    const [quizName, setQuizName] = React.useState<string>('Example Quiz'); // TODO
-    const [score, setScore] = React.useState<number>(0);
+const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
+    let history = useHistory();
+
+    const [numQuestions, setNumQuestions] = React.useState<number>(-1);
+    const [questions, setQuestions] = React.useState<any>(''); // TODO typecheck
     const [scoreTracker, setScoreTracker] = React.useState<boolean[]>([]);
     const [scoreMessage, setScoreMessage] = React.useState<any>('');
-    const [questions, setQuestions] = React.useState<any>('');
-    const [numQuestions, setNumQuestions] = React.useState<number>(-1);
 
     const gradeQuiz = () => {
-        var newScore: number = 0;
+        var score: number = 0;
         scoreTracker.map(bool => {
             if (bool) {
-                newScore++;
+                score++;
             }
         })
-        setScore(newScore);
     
         var newMessage = (
             <Grid container direction='row' justify='center' alignItems='center'>
@@ -41,79 +41,92 @@ const TakeQuiz: React.FC = () => {
         setScoreMessage(newMessage);
     }
 
-    const handleChange = (c: number, correct: number, index: number) => {
+    const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>, correct: number, index: number) => {
+        var choice = Number(e.target.value);
         var tempTracker = scoreTracker;
-        if (c == correct) {
+        if (choice == correct) {
             tempTracker[index] = true;
         } else {
             tempTracker[index] = false;
         }
+
         setScoreTracker(tempTracker);
     }
 
-    // ****** TODO ****** FIX RADIO GROUP AND BUTTONS
-    const generateQuiz = (quizData: any) => { // TODO typecheck quizData correctly
-        setNumQuestions(quizData.numQuestions);
-    
-        // grow the array boolean array of scores to correct size
-        var tempTracker = scoreTracker;
-        for (var i=0; i<numQuestions; i++) {
-            tempTracker.push(false);
+    const generateQuiz = (quizData: any) => { // TODO typecheck quizData correctly    
+        var tempScoreTracker: boolean[] = new Array(quizData.numQuestions);
+
+        for (var i=0; i<quizData.numQuestions; i++) {
+            tempScoreTracker[i] = false;
         }
-        setScoreTracker(tempTracker);
+
+        setNumQuestions(quizData.numQuestions);
+        setScoreTracker(tempScoreTracker);
     
-        var qs: any[] = quizData.questions.slice(1); // TODO typecheck this correctly
+        var qs: any[] = quizData.questions; // TODO typecheck quizData.questions correctly
         var mappedQuestions: JSX.Element[] = qs.map(q =>
             <Grid key={q.questionNumber} container alignItems='center'>
                 <Grid container justify='center' alignItems='center'>
                     <Typography variant='h4'> {q.questionName} </Typography>
                 </Grid>
-                    <ButtonGroup
-                            component={RadioGroup}
-                            id={q}
-                            fullWidth
-                            orientation='vertical'
-                            variant='contained'
-                            onChange={(e: any) => handleChange(e.target.value, q.correctAnswer, q.questionNumber-1)}
-                    >
-                    <Button 
-                        value='1' 
-                        component={FormControlLabel} 
-                        control={<Radio color='primary' />} 
-                        label={q.answer1}
-                    />
-                    <Button 
-                        value='2' 
-                        component={FormControlLabel} 
-                        control={<Radio color='primary' />} 
-                        label={q.answer2}
-                    />
-                    <Button 
-                        value='3' 
-                        component={FormControlLabel} 
-                        control={<Radio color='primary' />} 
-                        label={q.answer3}
-                    />
-                    <Button 
-                        value='4' 
-                        component={FormControlLabel} 
-                        control={<Radio color='primary' />} 
-                        label={q.answer4}
-                    />
-                    </ButtonGroup>
+                <Grid item xs={12}>
+                    <Paper>
+                        <FormControl variant='outlined' fullWidth>
+                            <RadioGroup
+                                value={0}
+                                onChange={(e) => handleAnswerChange(e, q.correctAnswer, q.questionNumber-1)}
+                            >
+                                <Grid container justify='center' alignItems='center'>
+                                    <FormControlLabel
+                                        control={<Radio color='primary' />}
+                                        label={q.answer1}
+                                        value={1}
+                                        labelPlacement='end'
+                                    />
+                                </Grid>
+                                <Grid container justify='center' alignItems='center'>
+                                    <FormControlLabel
+                                        control={<Radio color='primary' />}
+                                        label={q.answer2}
+                                        value={2}
+                                        labelPlacement='end'
+                                    />
+                                </Grid>
+                                <Grid container justify='center' alignItems='center'>
+                                    <FormControlLabel
+                                        control={<Radio color='primary' />}
+                                        label={q.answer3}
+                                        value={3}
+                                        labelPlacement='end'
+                                    />
+                                </Grid>
+                                <Grid container justify='center' alignItems='center'>
+                                    <FormControlLabel
+                                        control={<Radio color='primary' />}
+                                        label={q.answer4}
+                                        value={4}
+                                        labelPlacement='end'
+                                    />
+                                </Grid>
+                            </RadioGroup>
+                        </FormControl>
+                    </Paper>
+                </Grid>     
             </Grid>
         );
         setQuestions(mappedQuestions);
     }
 
     // retrieve data about the specific quiz from firebase and use it to generate question components
-    db.ref('quizzes/' + quizName).once('value').then(snapshot => { generateQuiz(snapshot.val()) });
+    React.useEffect(() => {
+        db.ref('quizzes/' + props.quizName).once('value').then(snapshot => generateQuiz(snapshot.val()));
+    }, []);
 
     return(
         <React.Fragment>
             <Grid item xs={12} /><Grid item xs={12} />
             <Grid container direction='row' justify='center' alignItems='center'>
-                <Typography variant="h2"> {quizName} </Typography>
+                <Typography variant="h2"> {props.quizName} </Typography>
             </Grid>
             <Grid item xs={12} /><Grid item xs={12} />
 
@@ -126,7 +139,7 @@ const TakeQuiz: React.FC = () => {
                 variant='contained'
                 color='primary'
                 size='large'
-                onClick={() => gradeQuiz}
+                onClick={gradeQuiz}
             >
                 Grade my Quiz
             </Button>

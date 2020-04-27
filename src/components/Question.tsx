@@ -35,7 +35,7 @@ const Question: React.FC<QuestionProps> = (props) => {
 
     const handleRadioChange = (correctAnswerNum: number) => {
         setCorrectAnswer(correctAnswerNum);
-        props.handleQuestionChange(questionName, answer1, answer2, answer3, answer4, correctAnswer, props.number);
+        props.handleQuestionChange(questionName, answer1, answer2, answer3, answer4, correctAnswerNum, props.number);
     }
 
     const genQuestionLabel = (number: number) => {
