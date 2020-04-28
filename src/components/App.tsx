@@ -16,9 +16,15 @@ const App: React.FC = () => {
                 <Grid container spacing={3} alignItems='center'>
                     <BrowserRouter>
                         <Switch>
-                            <Route path='/' exact render={(childProps) => <Home sendQuizNameToTakeQuiz={updateQuizName} {...childProps} />} />
-                            <Route path='/take-quiz' render={(childProps) => <TakeQuiz quizName={quizName} {...childProps} />} />
-                            <Route path='/create-quiz' component={CreateQuiz} />
+                            <Route path='/' exact>
+                                <Home sendQuizNameToTakeQuiz={updateQuizName} />
+                            </Route>
+                            <Route path='/take-quiz'>
+                                <TakeQuiz quizName={quizName} />
+                            </Route>
+                            <Route path='/create-quiz'>
+                                <CreateQuiz />
+                            </Route>
                         </Switch>
                     </BrowserRouter>
                 </Grid>
