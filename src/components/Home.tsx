@@ -20,7 +20,15 @@ const Home: React.FC<HomeProps> = (props) => {
     const generateQuizButtons = (quizList: JSON) => {
         if (quizList) {
             var keys = Object.keys(quizList);
-            var newButtons: JSX.Element[] = keys.map((name) =>
+            var newButtons: JSX.Element[] = [];
+
+            newButtons.push(
+                <Grid container key='take-a-quiz' direction='row' justify='center' alignItems='center'>
+                    <Typography variant='h4'> Take a quiz: </Typography>
+                </Grid>
+            );
+            
+            keys.map((name) => newButtons.push(
                 <Button
                     key={name}
                     fullWidth
@@ -29,13 +37,18 @@ const Home: React.FC<HomeProps> = (props) => {
                 >
                     {name}
                 </Button>
-            );
+            ));
+
             setQuizButtons(newButtons);
         }
     }
 
     React.useEffect(() => {
-        db.ref('quizzes').once('value').then(snapshot => generateQuizButtons(snapshot.val()));
+        db.goOnline();
+        db.ref('quizzes').once('value').then(snapshot => { generateQuizButtons(snapshot.val())});
+        return () => {
+            db.goOffline();
+        }
     }, []);
 
     return (
@@ -48,10 +61,6 @@ const Home: React.FC<HomeProps> = (props) => {
 
             <Grid item xs={12} /><Grid item xs={12} />
             <Grid item xs={12} /><Grid item xs={12} />
-
-            <Grid container direction='row' justify='center' alignItems='center'>
-                <Typography variant='h4'> Take a quiz: </Typography>
-            </Grid>
 
             {quizButtons}
 

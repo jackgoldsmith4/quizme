@@ -3,39 +3,39 @@ import { Grid, Paper, TextField, Radio, RadioGroup, FormControl, FormControlLabe
 
 interface QuestionProps {
     number: number;
-    handleQuestionChange: Function;
+    updateParentForm: Function;
 }
 
 const Question: React.FC<QuestionProps> = (props) => {
-    const [questionName, setQuestionName] = React.useState<string>('');
-    const [answer1, setAnswer1] = React.useState<string>('');
-    const [answer2, setAnswer2] = React.useState<string>('');
-    const [answer3, setAnswer3] = React.useState<string>('');
-    const [answer4, setAnswer4] = React.useState<string>('');
-    const [correctAnswer, setCorrectAnswer] = React.useState<number>(0);
+    const [questionInfo, setQuestionInfo] = React.useState<QuestionInfo>(
+        {
+            questionName: null,
+            questionNumber: props.number,
+            answer1: null,
+            answer2: null,
+            answer3: null,
+            answer4: null,
+            correctAnswer: -1,
+        }
+    );
 
     const handleAnswerChange = (newAnswer: string, answerNumber: number) => {
         switch (answerNumber) {
             case 1:
-                setAnswer1(newAnswer);
+                setQuestionInfo({ ...questionInfo, answer1: newAnswer });
                 break;
             case 2:
-                setAnswer2(newAnswer);
+                setQuestionInfo({ ...questionInfo, answer2: newAnswer });
                 break;
             case 3:
-                setAnswer3(newAnswer);
+                setQuestionInfo({ ...questionInfo, answer3: newAnswer });
                 break;
             case 4:
-                setAnswer4(newAnswer);
+                setQuestionInfo({ ...questionInfo, answer4: newAnswer });
                 break;
             default:
                 throw new Error("Invalid answer number");
         }
-    }
-
-    const handleRadioChange = (correctAnswerNum: number) => {
-        setCorrectAnswer(correctAnswerNum);
-        props.handleQuestionChange(questionName, answer1, answer2, answer3, answer4, correctAnswerNum, props.number);
     }
 
     const genQuestionLabel = (number: number) => {
@@ -43,17 +43,21 @@ const Question: React.FC<QuestionProps> = (props) => {
         return q.concat(number.toString());
     }
 
+    React.useEffect(() => {
+        props.updateParentForm(props.number, questionInfo);
+    }, [questionInfo]);
+
     return (
         <React.Fragment>
                 <Grid container alignItems='center'>
                     <Grid item xs={12}>
                     <Paper>
                         <TextField
+                            inputProps={ {'data-testid': genQuestionLabel(props.number)} }
                             label={genQuestionLabel(props.number)}
                             fullWidth
                             variant='outlined'
-                            //required={true}
-                            onChange={e => setQuestionName(e.target.value)}
+                            onChange={e => setQuestionInfo({ ...questionInfo, questionName: e.target.value })}
                         />
                     </Paper>
                     </Grid>
@@ -63,7 +67,6 @@ const Question: React.FC<QuestionProps> = (props) => {
                             label='Answer Choice 1'
                             fullWidth
                             variant='outlined'
-                            //required={true}
                             onChange={(e) => handleAnswerChange(e.target.value, 1)}
                         />
                         </Paper>
@@ -74,7 +77,6 @@ const Question: React.FC<QuestionProps> = (props) => {
                             label='Answer Choice 2'
                             fullWidth
                             variant='outlined'
-                            //required={true}
                             onChange={(e) => handleAnswerChange(e.target.value, 2)}
                         />
                         </Paper>
@@ -85,7 +87,6 @@ const Question: React.FC<QuestionProps> = (props) => {
                             label='Answer Choice 3'
                             fullWidth
                             variant='outlined'
-                            //required={true}
                             onChange={(e) => handleAnswerChange(e.target.value, 3)}
                         />
                         </Paper>
@@ -96,45 +97,44 @@ const Question: React.FC<QuestionProps> = (props) => {
                             label='Answer Choice 4'
                             fullWidth
                             variant='outlined'
-                            //required={true}
                             onChange={(e) => handleAnswerChange(e.target.value, 4)}
                         />
                         </Paper>
                     </Grid>
                     <Grid item xs={12}>
                         <Paper>
-                            <FormControl variant='outlined' fullWidth /*required={true}*/>
+                            <FormControl variant='outlined' fullWidth>
                             <RadioGroup
                                 row
-                                value={correctAnswer}
+                                value={questionInfo.correctAnswer}
                             >
                                 <FormControlLabel
                                     value={1}
                                     control={<Radio color='primary' />}
                                     label='1'
                                     labelPlacement="start"
-                                    onChange={() => handleRadioChange(1)}
+                                    onChange={() => setQuestionInfo({ ...questionInfo, correctAnswer: 1 })}
                                 />
                                 <FormControlLabel
                                     value={2}
                                     control={<Radio color='primary' />}
                                     label='2'
                                     labelPlacement="start"
-                                    onChange={() => handleRadioChange(2)}
+                                    onChange={() => setQuestionInfo({ ...questionInfo, correctAnswer: 2 })}
                                 />
                                 <FormControlLabel
                                     value={3}
                                     control={<Radio color='primary' />}
                                     label='3'
                                     labelPlacement="start"
-                                    onChange={() => handleRadioChange(3)}
+                                    onChange={() => setQuestionInfo({ ...questionInfo, correctAnswer: 3 })}
                                 />
                                 <FormControlLabel
                                     value={4}
                                     control={<Radio color='primary' />}
                                     label='4'
                                     labelPlacement="start"
-                                    onChange={() => handleRadioChange(4)}
+                                    onChange={() => setQuestionInfo({ ...questionInfo, correctAnswer: 4 })}
                                 />
                             </RadioGroup>
                             </FormControl>

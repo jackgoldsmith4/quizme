@@ -4,8 +4,8 @@
   "description": "Multiple choice quizzes",
   "main": "index.tsx",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch --detectOpenHandles",
     "start": "webpack-dev-server --open",
     "build": "webpack"
   },
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.5.0",
-    "@testing-library/react": "^10.0.3",
+    "@testing-library/react": "^10.0.4",
     "html-webpack-plugin": "^4.2.1",
     "react-test-renderer": "^16.13.1",
     "source-map-loader": "^0.2.4",

@@ -10,58 +10,60 @@ const CreateQuiz: React.FC = () => {
     const [name, setName] = React.useState<string>('Create your Quiz');
     const [numQuestions, setNumQuestions] = React.useState<number>(0);
     const [questionComponents, setQuestionComponents] = React.useState<JSX.Element[]>([]);
-    const [questions, setQuestions] = React.useState<any[]>([]);
+    const [questions, setQuestions] = React.useState<QuestionInfo[]>([]);
 
     const handleNumQuestionsChange = (newNum: number) =>  {
-        if (newNum >= 1) {
-            var arr: JSX.Element[] = questionComponents.slice(0);
-
-            if (newNum > numQuestions) {
-                for (var i=numQuestions; i<newNum; i++) {
-                    arr.push(<Question key={i+1} number={i+1} handleQuestionChange={handleQuestionChange} />);
-                }
-            } else if (newNum < numQuestions) {
-                for (i=newNum; i<numQuestions; i++) {
-                    arr.pop();
-                }
-            }
-
-            setQuestionComponents(arr);
-            setNumQuestions(newNum);
+        if (newNum <= 0) {
+            newNum = 1;
         }
+
+        var arr: JSX.Element[] = questionComponents.slice(0);
+
+        if (newNum > numQuestions) {
+            for (var i=numQuestions; i<newNum; i++) {
+                arr.push(
+                    <Question key={i+1} number={i+1} updateParentForm={setQuestionN} />
+                );
+            }
+        } else if (newNum < numQuestions) {
+            for (i=newNum; i<numQuestions; i++) {
+                arr.pop();
+            }
+        }
+
+        setQuestionComponents(arr);
+        setNumQuestions(newNum);
     }
 
-    // retrieves data from a child Question component
-    const handleQuestionChange = (q: string, a1: string, a2: string, a3: string, a4: string, c: number, num: number) => {
-        var question = {
-            questionName: q,
-            questionNumber: num,
-            answer1: a1,
-            answer2: a2,
-            answer3: a3,
-            answer4: a4,
-            correctAnswer: c,
-        }
-
-        var arr = questions;
-        arr[num-1] = question;
-        setQuestions(arr);
+    // function to be passed to each child question component
+    const setQuestionN = (index: number, questionInfo: QuestionInfo) => {
+        var tempQuestions = questions;
+        tempQuestions[index] = questionInfo;
+        setQuestions(tempQuestions);
     }
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        // TODO add validation here to make sure necessary fields are filled out correctly
+        if (name !== 'Create your Quiz' && numQuestions > 0) {
+            for (var i=1; i<=numQuestions; i++) {
+                var q = questions[i];
+                if (q.questionName == null || q.answer1 == null || q.answer2 == null || q.answer3 == null || q.answer4 == null || q.correctAnswer == -1) {
+                    alert('Please finish filling out question ' + q.questionNumber);
+                    return;
+                }
+            }
 
-        db.ref('quizzes/' + name).set({
-            numQuestions: numQuestions,
-        });
-
-        questions.map(q => {
-            db.ref('quizzes/' + name + '/questions/' + q.questionNumber).set(q);
-        });
-
-        history.push('/');
+            db.goOnline();
+            db.ref('quizzes/' + name).set({
+                numQuestions: numQuestions,
+            });
+            questions.map(q => {
+                db.ref('quizzes/' + name + '/questions/' + q.questionNumber).set(q);
+            });
+            db.goOffline();
+    
+            history.push('/');
+        }
     }
-
 
     return (
         <React.Fragment>
@@ -72,6 +74,7 @@ const CreateQuiz: React.FC = () => {
 
             <Grid item xs={10}>
                 <TextField
+                    inputProps={ {'data-testid':'quiz-name-field'} }
                     label='Quiz Name'
                     fullWidth
                     variant='outlined'
@@ -80,7 +83,7 @@ const CreateQuiz: React.FC = () => {
             </Grid>
             <Grid item xs={2}>
                 <TextField
-                    id='number-of-questions'
+                    inputProps={ {'data-testid':'number-of-questions-field'} }
                     label='# of Questions'
                     variant='outlined'
                     type='number'

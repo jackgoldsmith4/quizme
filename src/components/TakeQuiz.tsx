@@ -7,13 +7,15 @@ interface TakeQuizProps {
     quizName: string;
 }
 
+type OptionalJSX = JSX.Element[] | JSX.Element | '';
+
 const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
     let history = useHistory();
 
     const [numQuestions, setNumQuestions] = React.useState<number>(-1);
-    const [questions, setQuestions] = React.useState<any>(''); // TODO typecheck
+    const [questions, setQuestions] = React.useState<OptionalJSX>('');
     const [scoreTracker, setScoreTracker] = React.useState<boolean[]>([]);
-    const [scoreMessage, setScoreMessage] = React.useState<any>('');
+    const [scoreMessage, setScoreMessage] = React.useState<OptionalJSX>('');
 
     const gradeQuiz = () => {
         var score: number = 0;
@@ -63,7 +65,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
         setNumQuestions(quizData.numQuestions);
         setScoreTracker(tempScoreTracker);
     
-        var qs: any[] = quizData.questions; // TODO typecheck quizData.questions correctly
+        var qs: QuestionInfo[] = quizData.questions;
         var mappedQuestions: JSX.Element[] = qs.map(q =>
             <Grid key={q.questionNumber} container alignItems='center'>
                 <Grid container justify='center' alignItems='center'>
@@ -119,7 +121,11 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
 
     // retrieve data about the specific quiz from firebase and use it to generate question components
     React.useEffect(() => {
+        db.goOnline();
         db.ref('quizzes/' + props.quizName).once('value').then(snapshot => generateQuiz(snapshot.val()));
+        return () => {
+            db.goOffline();
+        }
     }, []);
 
     return(
