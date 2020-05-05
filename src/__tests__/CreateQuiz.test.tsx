@@ -76,19 +76,24 @@ describe('CreateQuiz Component', () => {
         getByTestId('number-of-questions-field');
     });
 
-    test.skip('submit button: success if everything is filled out', () => {
+    test('submit button: success if everything is filled out', () => {
         const { getByText, getByTestId, queryByTestId } = render(<App />);
         fireEvent.click(getByText(/Create/i));
 
         fireEvent.change(getByTestId('quiz-name-field'), { target: { value: 'Test: Example Quiz' } });
         fireEvent.change(getByTestId('number-of-questions-field'), { target: { value: 1 } });
-        // TODO fill out the question fields by firing events
+
+        fireEvent.change(getByTestId('Question 1'), { target: { value: 'question name' } });
+        fireEvent.change(getByTestId('Question 1a1'), { target: { value: 'answer 1' } });
+        fireEvent.change(getByTestId('Question 1a2'), { target: { value: 'answer 2' } });
+        fireEvent.change(getByTestId('Question 1a3'), { target: { value: 'answer 3' } });
+        fireEvent.change(getByTestId('Question 1a4'), { target: { value: 'answer 4' } });
+        fireEvent.click(getByTestId('Question 1c1'));
 
         // submit button returns to home page
         fireEvent.click(getByText(/Submit/i));
+        expect(getByText(/Welcome/i).textContent).toContain('Welcome to QuizMe!');
         expect(queryByTestId('quiz-name-field')).toBe(null);
         expect(queryByTestId('number-of-questions-field')).toBe(null);
-
-        // TODO assert that the quiz name is present in the new home page render?
     });
 });

@@ -64,6 +64,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                     <Grid item xs={6} sm={6}>
                         <Paper>
                         <TextField
+                            inputProps={ {'data-testid': genQuestionLabel(props.number)+'a1'} }
                             label='Answer Choice 1'
                             fullWidth
                             variant='outlined'
@@ -74,6 +75,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                     <Grid item xs={6} sm={6}>
                         <Paper>
                         <TextField
+                            inputProps={ {'data-testid': genQuestionLabel(props.number)+'a2'} }
                             label='Answer Choice 2'
                             fullWidth
                             variant='outlined'
@@ -84,6 +86,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                     <Grid item xs={6} sm={6}>
                         <Paper>
                         <TextField
+                            inputProps={ {'data-testid': genQuestionLabel(props.number)+'a3'} }
                             label='Answer Choice 3'
                             fullWidth
                             variant='outlined'
@@ -94,6 +97,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                     <Grid item xs={6} sm={6}>
                         <Paper>
                         <TextField
+                            inputProps={ {'data-testid': genQuestionLabel(props.number)+'a4'} }
                             label='Answer Choice 4'
                             fullWidth
                             variant='outlined'
@@ -109,6 +113,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                                 value={questionInfo.correctAnswer}
                             >
                                 <FormControlLabel
+                                    data-testid={genQuestionLabel(props.number)+'c1'}
                                     value={1}
                                     control={<Radio color='primary' />}
                                     label='1'
@@ -116,6 +121,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                                     onChange={() => setQuestionInfo({ ...questionInfo, correctAnswer: 1 })}
                                 />
                                 <FormControlLabel
+                                    data-testid={genQuestionLabel(props.number)+'c2'}
                                     value={2}
                                     control={<Radio color='primary' />}
                                     label='2'
@@ -123,6 +129,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                                     onChange={() => setQuestionInfo({ ...questionInfo, correctAnswer: 2 })}
                                 />
                                 <FormControlLabel
+                                    data-testid={genQuestionLabel(props.number)+'c3'}
                                     value={3}
                                     control={<Radio color='primary' />}
                                     label='3'
@@ -130,6 +137,7 @@ const Question: React.FC<QuestionProps> = (props) => {
                                     onChange={() => setQuestionInfo({ ...questionInfo, correctAnswer: 3 })}
                                 />
                                 <FormControlLabel
+                                    data-testid={genQuestionLabel(props.number)+'c4'}
                                     value={4}
                                     control={<Radio color='primary' />}
                                     label='4'

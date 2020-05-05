@@ -23,20 +23,34 @@ describe('App Component + general user interaction testing', () => {
         expect(getByText(/Create/i).textContent).toContain('Create your Quiz');
     });
 
-    test('Integration: create a 2-question quiz from the starting page, then take it', () => {
+    test('Integration: create a 2-question quiz from the starting page, then take that quiz', () => {
         const { getByText, getByTestId } = render(<App />);
         fireEvent.click(getByText(/Create/i));
 
-        fireEvent.input(getByTestId('quiz-name-field'), 'Test: Example Quiz');
-        fireEvent.input(getByTestId('number-of-questions-field'), 2);
+        fireEvent.change(getByTestId('quiz-name-field'), { target: { value: 'Test: Example Quiz' } });
+        fireEvent.change(getByTestId('number-of-questions-field'), { target: { value: 2 } });
 
-        // TODO fill in question 1
+        // fill out question 1
+        fireEvent.change(getByTestId('Question 1'), { target: { value: 'question 1 name' } });
+        fireEvent.change(getByTestId('Question 1a1'), { target: { value: 'answer 1: correct' } });
+        fireEvent.change(getByTestId('Question 1a2'), { target: { value: 'answer 2' } });
+        fireEvent.change(getByTestId('Question 1a3'), { target: { value: 'answer 3' } });
+        fireEvent.change(getByTestId('Question 1a4'), { target: { value: 'answer 4' } });
+        fireEvent.click(getByTestId('Question 1c1'));
 
-        // TODO fill in question 2
+        // fill out question 2
+        fireEvent.change(getByTestId('Question 2'), { target: { value: 'question 2 name' } });
+        fireEvent.change(getByTestId('Question 2a1'), { target: { value: 'answer 1' } });
+        fireEvent.change(getByTestId('Question 2a2'), { target: { value: 'answer 2: correct' } });
+        fireEvent.change(getByTestId('Question 2a3'), { target: { value: 'answer 3' } });
+        fireEvent.change(getByTestId('Question 2a4'), { target: { value: 'answer 4' } });
+        fireEvent.click(getByTestId('Question 2c2'));
 
         fireEvent.click(getByText(/Submit/i));
 
-        // assert on the submit that both questions are filled out, all data is in the submit method
-        // take the quiz
+        // should have returned to welcome page after submiting the quiz
+        expect(getByText(/Welcome/i).textContent).toContain('Welcome to QuizMe!');
+
+        // TODO click on the quiz from Home page, take the quiz, grade it
     });
 });
