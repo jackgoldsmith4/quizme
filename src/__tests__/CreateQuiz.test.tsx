@@ -12,6 +12,12 @@ jest.mock('react-router-dom', () => ({
     }),
 }));
 
+// mock firebase set() function so no test quizzes are stored in the DB
+jest.mock('firebase', () => ({
+    ...(jest.requireActual('firebase')),
+    set: jest.fn()
+}));
+
 describe('CreateQuiz Component', () => {
     afterEach(cleanup);
 
