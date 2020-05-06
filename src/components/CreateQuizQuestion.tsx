@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Grid, Paper, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Button } from '@material-ui/core';
+import { Grid, Paper, TextField, Radio, RadioGroup, FormControl, FormControlLabel } from '@material-ui/core';
 
-interface QuestionProps {
+interface CQQuestionProps {
     number: number;
-    updateParentForm: Function;
+    updateParentState: (index: number, questionInfo: QuestionInfo) => void;
 }
 
-const Question: React.FC<QuestionProps> = (props) => {
+const CreateQuizQuestion: React.FC<CQQuestionProps> = (props) => {
     const [questionInfo, setQuestionInfo] = React.useState<QuestionInfo>(
         {
             questionName: null,
@@ -44,7 +44,7 @@ const Question: React.FC<QuestionProps> = (props) => {
     }
 
     React.useEffect(() => {
-        props.updateParentForm(props.number, questionInfo);
+        props.updateParentState(props.number, questionInfo);
     }, [questionInfo]);
 
     return (
@@ -156,4 +156,4 @@ const Question: React.FC<QuestionProps> = (props) => {
     );
 }
 
-export default Question;
+export default CreateQuizQuestion;

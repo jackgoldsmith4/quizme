@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
-import Question from './Question';
+import CreateQuizQuestion from './CreateQuizQuestion';
 import db from '../base.js';
 
 const CreateQuiz: React.FC = () => {
@@ -22,7 +22,7 @@ const CreateQuiz: React.FC = () => {
         if (newNum > numQuestions) {
             for (var i=numQuestions; i<newNum; i++) {
                 arr.push(
-                    <Question key={i+1} number={i+1} updateParentForm={setQuestionN} />
+                    <CreateQuizQuestion key={i+1} number={i+1} updateParentState={setQuestionN} />
                 );
             }
         } else if (newNum < numQuestions) {

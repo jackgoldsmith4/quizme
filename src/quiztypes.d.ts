@@ -7,3 +7,8 @@ interface QuestionInfo {
     answer4: string | null,
     correctAnswer: number
 }
+
+interface QuizDBSnapshot {
+    numQuestions: number,
+    questions: QuestionInfo[]
+}

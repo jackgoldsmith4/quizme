@@ -1,24 +1,29 @@
 import * as React from 'react';
 import { render, cleanup, fireEvent } from "@testing-library/react";
 
-import App from '../components/App';
+import CreateQuiz from '../components/CreateQuiz';
 
-window.alert = jest.fn(() => {});
+window.alert = jest.fn();
+
+const historyMock: jest.Mock = jest.fn();
+jest.mock('react-router-dom', () => ({
+    useHistory: () => ({
+        push: historyMock
+    }),
+}));
 
 describe('CreateQuiz Component', () => {
     afterEach(cleanup);
 
     test('CreateQuiz form renders with name field and number of questions field', () => {
-        const { getByText, getByTestId } = render(<App />);
-        fireEvent.click(getByText(/Create/i));
+        const { getByTestId } = render(<CreateQuiz />);
 
         getByTestId('quiz-name-field');
         getByTestId('number-of-questions-field');
     });
 
     test('number of questions field: input >=1 is valid, input <1 is changed to 1', () => {
-        const { getByText, getByTestId, queryByTestId } = render(<App />);
-        fireEvent.click(getByText(/Create/i));
+        const { getByTestId, queryByTestId } = render(<CreateQuiz />);
 
         expect(getByTestId('number-of-questions-field').getAttribute('value')).toBe('0');
 
@@ -40,60 +45,60 @@ describe('CreateQuiz Component', () => {
     });
 
     test('submit button: shouldn\'t work if name field isn\'t changed', () => {
-        const { getByText, getByTestId } = render(<App />);
-        fireEvent.click(getByText(/Create/i));
+        const { getByText, getByTestId } = render(<CreateQuiz />);
 
         fireEvent.change(getByTestId('number-of-questions-field'), { target: { value: 1 } });
 
         // submit button shouldn't work because name wasn't updated
         fireEvent.click(getByText(/Submit/i));
-        getByTestId('quiz-name-field');
-        getByTestId('number-of-questions-field');
+        expect(historyMock).not.toHaveBeenCalled();
     });
 
     test('submit button: shouldn\'t work if # of questions field isn\'t changed', () => {
-        const { getByText, getByTestId } = render(<App />);
-        fireEvent.click(getByText(/Create/i));
+        const { getByText, getByTestId } = render(<CreateQuiz />);
 
         fireEvent.change(getByTestId('quiz-name-field'), { target: { value: 'Test: Example Quiz' } });
         
         // submit button shouldn't work becuase # of questions wasn't updated, but name was successfully changed
         fireEvent.click(getByText(/Submit/i));
-        getByTestId('quiz-name-field');
-        getByTestId('number-of-questions-field');
+        expect(historyMock).not.toHaveBeenCalled();
     });
 
     test('submit button: shouldn\'t work if question fields aren\'t filled out', () => {
-        const { getByText, getByTestId } = render(<App />);
-        fireEvent.click(getByText(/Create/i));
+        const { getByText, getByTestId } = render(<CreateQuiz />);
 
         fireEvent.change(getByTestId('quiz-name-field'), { target: { value: 'Test: Example Quiz' } });
         fireEvent.change(getByTestId('number-of-questions-field'), { target: { value: 1 } });
 
         // submit button shouldn't work because the question wasn't filled out
         fireEvent.click(getByText(/Submit/i));
-        getByTestId('quiz-name-field');
-        getByTestId('number-of-questions-field');
+        expect(historyMock).not.toHaveBeenCalled();
     });
 
     test('submit button: success if everything is filled out', () => {
-        const { getByText, getByTestId, queryByTestId } = render(<App />);
-        fireEvent.click(getByText(/Create/i));
+        const { getByText, getByTestId } = render(<CreateQuiz />);
 
         fireEvent.change(getByTestId('quiz-name-field'), { target: { value: 'Test: Example Quiz' } });
-        fireEvent.change(getByTestId('number-of-questions-field'), { target: { value: 1 } });
+        fireEvent.change(getByTestId('number-of-questions-field'), { target: { value: 2 } });
 
-        fireEvent.change(getByTestId('Question 1'), { target: { value: 'question name' } });
-        fireEvent.change(getByTestId('Question 1a1'), { target: { value: 'answer 1' } });
+        // fill out question 1
+        fireEvent.change(getByTestId('Question 1'), { target: { value: 'question 1 name' } });
+        fireEvent.change(getByTestId('Question 1a1'), { target: { value: 'answer 1: correct' } });
         fireEvent.change(getByTestId('Question 1a2'), { target: { value: 'answer 2' } });
         fireEvent.change(getByTestId('Question 1a3'), { target: { value: 'answer 3' } });
         fireEvent.change(getByTestId('Question 1a4'), { target: { value: 'answer 4' } });
         fireEvent.click(getByTestId('Question 1c1'));
 
+        // fill out question 2
+        fireEvent.change(getByTestId('Question 2'), { target: { value: 'question 2 name' } });
+        fireEvent.change(getByTestId('Question 2a1'), { target: { value: 'answer 1' } });
+        fireEvent.change(getByTestId('Question 2a2'), { target: { value: 'answer 2: correct' } });
+        fireEvent.change(getByTestId('Question 2a3'), { target: { value: 'answer 3' } });
+        fireEvent.change(getByTestId('Question 2a4'), { target: { value: 'answer 4' } });
+        fireEvent.click(getByTestId('Question 2c2'));
+
         // submit button returns to home page
         fireEvent.click(getByText(/Submit/i));
-        expect(getByText(/Welcome/i).textContent).toContain('Welcome to QuizMe!');
-        expect(queryByTestId('quiz-name-field')).toBe(null);
-        expect(queryByTestId('number-of-questions-field')).toBe(null);
+        expect(historyMock).toHaveBeenCalled();
     });
 });

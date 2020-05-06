@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Grid, Typography, Paper, Radio, RadioGroup, FormControl, FormControlLabel } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
+
+import TakeQuizQuestion from './TakeQuizQuestion';
 import db from '../base.js';
 
 interface TakeQuizProps {
     quizName: string;
+    quizData?: QuizDBSnapshot;
 }
 
 type OptionalJSX = JSX.Element[] | JSX.Element | '';
@@ -28,7 +31,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
         var newMessage = (
             <Grid container direction='row' justify='center' alignItems='center'>
                 <Grid container direction='row' justify='center' alignItems='center'>
-                    <Typography variant='h4'> {score} / {numQuestions} Correct </Typography>
+                    <Typography data-testid='grade-results' variant='h4'> {score} / {numQuestions} Correct </Typography>
                 </Grid>
                 <Button
                     variant='contained'
@@ -43,8 +46,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
         setScoreMessage(newMessage);
     }
 
-    const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>, correct: number, index: number) => {
-        var choice = Number(e.target.value);
+    const updateScoreTracker = (choice: number, correct: number, index: number) => {
         var tempTracker = scoreTracker;
         if (choice == correct) {
             tempTracker[index] = true;
@@ -55,7 +57,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
         setScoreTracker(tempTracker);
     }
 
-    const generateQuiz = (quizData: any) => { // TODO typecheck quizData correctly    
+    const generateQuiz = (quizData: QuizDBSnapshot) => {
         var tempScoreTracker: boolean[] = new Array(quizData.numQuestions);
 
         for (var i=0; i<quizData.numQuestions; i++) {
@@ -72,59 +74,23 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
                     <Typography variant='h4'> {q.questionName} </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    <Paper>
-                        <FormControl variant='outlined' fullWidth>
-                            <RadioGroup
-                                value={0}
-                                onChange={(e) => handleAnswerChange(e, q.correctAnswer, q.questionNumber-1)}
-                            >
-                                <Grid container justify='center' alignItems='center'>
-                                    <FormControlLabel
-                                        control={<Radio color='primary' />}
-                                        label={q.answer1}
-                                        value={1}
-                                        labelPlacement='end'
-                                    />
-                                </Grid>
-                                <Grid container justify='center' alignItems='center'>
-                                    <FormControlLabel
-                                        control={<Radio color='primary' />}
-                                        label={q.answer2}
-                                        value={2}
-                                        labelPlacement='end'
-                                    />
-                                </Grid>
-                                <Grid container justify='center' alignItems='center'>
-                                    <FormControlLabel
-                                        control={<Radio color='primary' />}
-                                        label={q.answer3}
-                                        value={3}
-                                        labelPlacement='end'
-                                    />
-                                </Grid>
-                                <Grid container justify='center' alignItems='center'>
-                                    <FormControlLabel
-                                        control={<Radio color='primary' />}
-                                        label={q.answer4}
-                                        value={4}
-                                        labelPlacement='end'
-                                    />
-                                </Grid>
-                            </RadioGroup>
-                        </FormControl>
-                    </Paper>
+                    <TakeQuizQuestion quizInfo={q} updateParentState={updateScoreTracker} />
                 </Grid>     
             </Grid>
         );
         setQuestions(mappedQuestions);
     }
 
-    // retrieve data about the specific quiz from firebase and use it to generate question components
+    // retrieve data about the quiz and use it to generate quiz elements
     React.useEffect(() => {
-        db.goOnline();
-        db.ref('quizzes/' + props.quizName).once('value').then(snapshot => generateQuiz(snapshot.val()));
-        return () => {
-            db.goOffline();
+        if (!props.quizData) {
+            db.goOnline();
+            db.ref('quizzes/' + props.quizName).once('value').then(snapshot => generateQuiz(snapshot.val()));
+            return () => {
+                db.goOffline();
+            }
+        } else {
+            generateQuiz(props.quizData!);
         }
     }, []);
 
