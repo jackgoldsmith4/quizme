@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, cleanup, fireEvent, getByTestId } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 
 import TakeQuiz from '../components/TakeQuiz'
 
@@ -36,7 +36,10 @@ const sampleQuizData: QuizDBSnapshot = {
 }
 
 describe('TakeQuiz Component', () => {
-    afterEach(cleanup);
+    afterEach(() => {
+        jest.resetAllMocks();
+        cleanup();
+    });
 
     test('quiz renders with name as title and correct number of questions', () => {
         const { getByText, queryByText } = render(<TakeQuiz quizName={sampleName} quizData={sampleQuizData} />);

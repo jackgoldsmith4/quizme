@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Button, Grid, Typography } from '@material-ui/core';
 
 import TakeQuizQuestion from './TakeQuizQuestion';
-import db from '../base.js';
+import db from '../base';
 
 interface TakeQuizProps {
     quizName: string;

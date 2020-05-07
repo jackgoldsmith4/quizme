@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
+
 import CreateQuizQuestion from './CreateQuizQuestion';
-import db from '../base.js';
+import db from '../base';
 
 const CreateQuiz: React.FC = () => {
     let history = useHistory();

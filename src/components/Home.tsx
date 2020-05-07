@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Grid, Typography, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import db from '../base.js';
+
+import db from '../base';
 
 interface HomeProps {
     sendQuizNameToTakeQuiz: (name: string) => void;

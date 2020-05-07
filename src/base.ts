@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
 var config = {
     apiKey: "AIzaSyCeIqhsxuHUgUKmLgtj3GQCVZc0MWlUSx4",
@@ -8,7 +9,7 @@ var config = {
     storageBucket: "quizme-a7af7.appspot.com",
 };
 
-var app = firebase.initializeApp(config);
-var db = app.firestore();
+var app: firebase.app.App = firebase.initializeApp(config);
+var db: firebase.firestore.Firestore = app.firestore();
 
 export default db;

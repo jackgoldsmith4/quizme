@@ -3,7 +3,7 @@ module.exports = {
 
     // add support for typescript using ts-jest
     transform: {
-      "^.+\\.(js|tsx)?$": "ts-jest",
+      "^.+\\.(js|tsx|ts)?$": "ts-jest",
     },
   
     // adds special assertions to jest
