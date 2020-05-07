@@ -55,7 +55,7 @@ const CreateQuiz: React.FC = () => {
             db.collection('quizzes').doc(name).set({
                 name: name,
                 numQuestions: numQuestions,
-                questions: questions.splice(1)
+                questions: questions.slice(1, numQuestions+1)
             });
     
             history.push('/');

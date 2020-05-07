@@ -22,4 +22,6 @@ describe('App Component', () => {
         expect(getByText(/Create/i).className).not.toContain('Button');
         expect(getByText(/Create/i).textContent).toContain('Create your Quiz');
     });
+
+    // TODO full integration testing WITH DB: create quiz, take it, grade it, return home, delete it
 });
