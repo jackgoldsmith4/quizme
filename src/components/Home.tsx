@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography, IconButton } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import db from '../base.js';
 
 interface HomeProps {
@@ -11,6 +12,7 @@ const Home: React.FC<HomeProps> = (props) => {
     let history = useHistory();
 
     const [quizButtons, setQuizButtons] = React.useState<JSX.Element[]>([]);
+    const [toDelete, setToDelete] = React.useState<string>('');
 
     const sendQuizName = (name: string) => {
         props.sendQuizNameToTakeQuiz(name);
@@ -28,14 +30,17 @@ const Home: React.FC<HomeProps> = (props) => {
             );  
             
             quizList.map(name => newButtons.push(
-                <Button
-                    key={name}
-                    fullWidth
-                    size='large'
-                    onClick={() => sendQuizName(name)}
-                >
-                    {name}
-                </Button>
+                <Grid container key={name} justify='center' alignItems='center' >
+                    <Button
+                        size='large'
+                        onClick={() => sendQuizName(name)}
+                    >
+                        {name}
+                    </Button>
+                    <IconButton onClick={() => setToDelete(name)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Grid>
             ));
             
 
@@ -50,6 +55,13 @@ const Home: React.FC<HomeProps> = (props) => {
         });
         return () => { unsubscribe() };
     }, []);
+
+    React.useEffect(() => {
+        const unsubscribe = db.collection('quizzes').where('name', '==', toDelete).onSnapshot(snapshot => {
+            snapshot.forEach(doc => doc.ref.delete());
+        });
+        return (() => unsubscribe());
+    }, [toDelete]);
 
     return (
         <React.Fragment>
