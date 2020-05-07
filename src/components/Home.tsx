@@ -44,10 +44,11 @@ const Home: React.FC<HomeProps> = (props) => {
     }
 
     React.useEffect(() => {
-        db.collection('quizzes').get().then(snapshot => {
+        const unsubscribe = db.collection('quizzes').onSnapshot(snapshot => {
             const data: string[] = snapshot.docs.map(doc => doc.data().name);
             generateQuizButtons(data);
         });
+        return () => { unsubscribe() };
     }, []);
 
     return (

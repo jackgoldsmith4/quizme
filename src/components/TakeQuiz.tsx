@@ -69,14 +69,18 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
     
         var qs: QuestionInfo[] = quizData.questions;
         var mappedQuestions: JSX.Element[] = qs.map(q =>
-            <Grid key={q.questionNumber} container alignItems='center'>
-                <Grid container justify='center' alignItems='center'>
-                    <Typography variant='h4'> {q.questionName} </Typography>
+            <React.Fragment  key={q.questionNumber}>
+                <Grid container alignItems='center'>
+                    <Grid container justify='center' alignItems='center'>
+                        <Typography variant='h4'> {q.questionName} </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TakeQuizQuestion quizInfo={q} updateParentState={updateScoreTracker} />
+                    </Grid>
+                    <Grid item xs={12} /><Grid item xs={12} />
                 </Grid>
-                <Grid item xs={12}>
-                    <TakeQuizQuestion quizInfo={q} updateParentState={updateScoreTracker} />
-                </Grid>     
-            </Grid>
+                <Grid item xs={12} />
+            </React.Fragment>
         );
         setQuestions(mappedQuestions);
     }
@@ -84,7 +88,8 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
     // retrieve data about the quiz and use it to generate quiz elements
     React.useEffect(() => {
         if (!props.quizData) {
-            db.collection('quizzes').doc(props.quizName).get().then(doc => generateQuiz(doc.data()!));
+            const unsubscribe = db.collection('quizzes').doc(props.quizName).onSnapshot(doc => generateQuiz(doc.data()!));
+            return () => { unsubscribe() };
         } else {
             generateQuiz(props.quizData!);
         }
