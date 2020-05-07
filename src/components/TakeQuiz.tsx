@@ -57,7 +57,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
         setScoreTracker(tempTracker);
     }
 
-    const generateQuiz = (quizData: QuizDBSnapshot) => {
+    const generateQuiz = (quizData: QuizInfo) => {
         var tempScoreTracker: boolean[] = new Array(quizData.numQuestions);
 
         for (var i=0; i<quizData.numQuestions; i++) {
@@ -84,11 +84,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = (props) => {
     // retrieve data about the quiz and use it to generate quiz elements
     React.useEffect(() => {
         if (!props.quizData) {
-            db.goOnline();
-            db.ref('quizzes/' + props.quizName).once('value').then(snapshot => generateQuiz(snapshot.val()));
-            return () => {
-                db.goOffline();
-            }
+            db.collection('quizzes').doc(props.quizName).get().then(doc => generateQuiz(doc.data()!));
         } else {
             generateQuiz(props.quizData!);
         }

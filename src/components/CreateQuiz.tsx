@@ -45,21 +45,18 @@ const CreateQuiz: React.FC = () => {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if (name !== 'Create your Quiz' && numQuestions > 0) {
             for (var i=1; i<=numQuestions; i++) {
-                var q = questions[i];
+                var q: QuestionInfo = questions[i];
                 if (q.questionName == null || q.answer1 == null || q.answer2 == null || q.answer3 == null || q.answer4 == null || q.correctAnswer == -1) {
                     alert('Please finish filling out question ' + q.questionNumber);
                     return;
                 }
             }
 
-            db.goOnline();
-            db.ref('quizzes/' + name).set({
+            db.collection('quizzes').doc(name).set({
+                name: name,
                 numQuestions: numQuestions,
+                questions: questions.splice(1)
             });
-            questions.map(q => {
-                db.ref('quizzes/' + name + '/questions/' + q.questionNumber).set(q);
-            });
-            db.goOffline();
     
             history.push('/');
         }

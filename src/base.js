@@ -8,7 +8,7 @@ var config = {
     storageBucket: "quizme-a7af7.appspot.com",
 };
 
-var init = firebase.initializeApp(config);
-var db = init.database();
+var app = firebase.initializeApp(config);
+var db = app.firestore();
 
 export default db;

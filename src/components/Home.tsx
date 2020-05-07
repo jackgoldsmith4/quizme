@@ -17,18 +17,17 @@ const Home: React.FC<HomeProps> = (props) => {
         history.push('/take-quiz');
     }
 
-    const generateQuizButtons = (quizList: JSON) => {
-        if (quizList) {
-            var keys = Object.keys(quizList);
+    const generateQuizButtons = (quizList: string[]) => {
+        if (quizList.length > 0) {
             var newButtons: JSX.Element[] = [];
 
             newButtons.push(
                 <Grid container key='take-a-quiz' direction='row' justify='center' alignItems='center'>
                     <Typography variant='h4'> Take a quiz: </Typography>
                 </Grid>
-            );
+            );  
             
-            keys.map((name) => newButtons.push(
+            quizList.map(name => newButtons.push(
                 <Button
                     key={name}
                     fullWidth
@@ -38,17 +37,17 @@ const Home: React.FC<HomeProps> = (props) => {
                     {name}
                 </Button>
             ));
+            
 
             setQuizButtons(newButtons);
         }
     }
 
     React.useEffect(() => {
-        db.goOnline();
-        db.ref('quizzes').once('value').then(snapshot => { generateQuizButtons(snapshot.val())});
-        return () => {
-            db.goOffline();
-        }
+        db.collection('quizzes').get().then(snapshot => {
+            const data: string[] = snapshot.docs.map(doc => doc.data().name);
+            generateQuizButtons(data);
+        });
     }, []);
 
     return (

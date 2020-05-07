@@ -12,3 +12,5 @@ interface QuizDBSnapshot {
     numQuestions: number,
     questions: QuestionInfo[]
 }
+
+type QuizInfo = QuizDBSnapshot | firebase.firestore.DocumentData;
